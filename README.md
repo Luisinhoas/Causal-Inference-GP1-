@@ -1,12 +1,19 @@
 
 ----
-title: ""EDUCATIONAL ATTAINMENT AND VIDEOGAMES""
-author: ""Luis Eduardo Andrade Silva & Cristina Calvo López""
+title: "EDUCATIONAL ATTAINMENT AND VIDEOGAMES"
+author: "Luis Eduardo Andrade Silva & Cristina Calvo López"
 output: pdf_document
 indent: true
 ----
 
----
+----
+title: "EDUCATIONAL ATTAINMENT AND VIDEOGAMES"
+author: "Luis Eduardo Andrade Silva & Cristina Calvo López"
+header-includes:
+   - \setlength\parindent{24pt}
+output:
+    pdf_document
+----
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
