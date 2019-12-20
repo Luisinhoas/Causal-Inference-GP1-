@@ -4,14 +4,14 @@ author: "Luis Eduardo Andrade Silva & Cristina Calvo López"
 output:
   pdf_document:
     toc: TRUE
-    number_sections: false
+    number_sections: true
     keep_tex: yes
     latex_engine: xelatex
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-setwd("/Users/Luisinho/Desktop")
+setwd("/Users/Luisinho/Desktop/Github.GP1")
 ```
 
 *************
@@ -19,10 +19,9 @@ setwd("/Users/Luisinho/Desktop")
 
 ```{r, echo=FALSE}
 rm(list=ls())  # Clear workspace
-library(haven)
-data <- read_sav("/Users/Luisinho/Desktop/cafev4.sav")
+data <- readRDS(file = "data.Rds")
+data<-data[complete.cases(data),]
 attach(data)
-summary(data)
 ```
 
 Libraries:
@@ -30,80 +29,39 @@ Libraries:
 ```{r}
 library(usethis)
 library(devtools)
-#devtools::install_github("jepperosenborg/olsat", force = TRUE)
 library(carData)
 library(car)
 library(lmtest)
 library(zoo)
 library(mctest)
 library(formattable)
-library(olsat)
-```
-
-
-Numeric:
-
-```{r}
-dta<-data
-attach(dta)
-
-dta$income<-as.numeric(INCOME)
-dta$gender<-as.numeric(gender)
-dta$act<-as.numeric(ACTCOMP)
-dta$gpa<-as.numeric(HSGPA)
-dta$age<-as.numeric(AGE2)
-dta$video<-as.numeric(HPW14)
-dta$religion<-as.numeric(religion)
-dta$paeduc<-as.numeric(paeduc)
-dta$typehs<-as.numeric(typehs)
-dta$year<-as.numeric(YEAR)
-dta$sport<-as.numeric(HPW04)
-dta$leisure<-as.numeric(HPW05)
-dta$tv<-as.numeric(HPW09)
-dta$race<-as.numeric(RACEGROUP)
-dta$weight<-as.numeric(weight)
-dta$race2<-as.numeric(race2)
-
-myvars<-c("typehs", "gender", "act", "gpa", "age", "video", "religion", "paeduc", "year", "leisure", "sport", "tv", "race", "weight", "income", "race2")
-dta<-dta[myvars]
-
-dta<-na.exclude(dta)
-summary(dta)
-dta<-dta[complete.cases(dta),]
-attach(dta)
 ```
 
 
 ##. Pre-analysis of the data and OLS.
 
-### What is the correlation between IND variables? 
+What is the correlation between IND variables? 
 
 ```{r}
-cor(income,gender, use = "complete.obs") #0.1265339
-cor(income,gpa, use = "complete.obs") #0.1265339
-cor(income,age, use = "complete.obs") #-0.02129441
-cor(income,video, use = "complete.obs") #-0.00520055
-cor(income,religion, use = "complete.obs") #-0.003030037
-cor(income,paeduc, use = "complete.obs") #0.02794221
-cor(income,typehs, use = "complete.obs") #0.08599288
+cor(income,gender, use = "complete.obs") 
+cor(income,gpa, use = "complete.obs") 
+cor(income,age, use = "complete.obs") 
+cor(income,video, use = "complete.obs") 
+cor(income,religion, use = "complete.obs")
+cor(income,leisure, use = "complete.obs") 
 
 
-cor(gpa,age, use = "complete.obs") #-0.02913281
-cor(gpa,video, use = "complete.obs") #-0.1278687
-cor(gpa,religion, use = "complete.obs") #-0.1278687
-cor(gpa,gender, use = "complete.obs") #0.1285938
-cor(gpa,paeduc, use = "complete.obs") #-0.006640133
-cor(gpa,typehs, use = "complete.obs") #0.008987206
+cor(gpa,age, use = "complete.obs") 
+cor(gpa,video, use = "complete.obs")
+cor(gpa,religion, use = "complete.obs") 
+cor(gpa,gender, use = "complete.obs") 
+cor(gpa,leisure, use = "complete.obs") 
 
 
-cor(video,religion, use = "complete.obs") #0.0658964
-cor(video,paeduc, use = "complete.obs") #0.008157152
-cor(video,typehs, use = "complete.obs") #-0.01454105
+cor(video,religion, use = "complete.obs") 
+cor(video,leisure, use = "complete.obs") 
 
-cor(religion,paeduc, use = "complete.obs") #-0.0001594055
-cor(religion,typehs, use = "complete.obs") #-0.07434896
-
-cor(paeduc,typehs, use = "complete.obs") #0.005558853
+cor(religion,leisure, use = "complete.obs") 
 
 
 age2<-sqrt(age)
@@ -130,7 +88,7 @@ Knowing this, we can conduct the test.
 ```{r}
 #library(MASS)
 OLS<-lm(formula = act ~ age2 + gender + (gpa^2) + religion + video + 
-    year + leisure + race + income, data = dta)
+    year + leisure + race + income, data = data)
 
 lht(OLS, c("video = 0", "leisure = 0", "income=0"), white.adjust = "hc1")
 ```
@@ -162,7 +120,7 @@ This is our variance- covariance matrix. The independent variables are listed bo
 par(mfrow=c(2,2))
 plot(OLS)
 
-X<-dta[,1:15]
+X<-data[,1:12]
 #install.packages("GGally")
 library(GGally)
 # ggpairs(X) #funciona, pero tarde tres horas.
@@ -208,10 +166,8 @@ As the problem seems to be more with tv, we're going to try to exclude it and al
 age2<-sqrt(age)
 gpa2<-sqrt(gpa)
 
-OLS2<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
+OLS2<-lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
 summary(OLS2)
-
-olsatester(OLS2)
 ```
 
 We also seem to have reduced the vif
@@ -226,19 +182,19 @@ We can check now again the multicoliniarity issue.
 Now we have to focus in the next problem: it seems that we also have a problem of Heterocedasticity. There are several ways to control this, but lets first focus on measuring if this is right.
 
 
-# 1. Bivariate OLS:
+# 1. Previous. Bivariate OLS:
 
 The most simple OLS we have to run is the effect of the main independent variable (viodegames) on our dependent (average SAT grade).
 
 
 ```{r}
-OLS<-lm(data=dta, act~video) 
+OLS<-lm(data=data, act~video) 
 summary(OLS)
 plot(OLS, c(1))
 
-attach(dta)
+attach(data)
 
-dta$video<-log(dta$video)
+data$video<-log(data$video)
 ```
 
 The model is act = 4.862415 + 0.25757 (video)+u.
@@ -260,10 +216,9 @@ cor1
 
 The correlation between log(income) and prppov is 0.0359588. Is a not very high, although is a positive correlation (so when one increases, the other variable increases). This is in the same line we were expected.
 
-
 ```{r}
 H<-c("act", "video")
-X<-dta[H]
+X<-data[H]
 
 library(corpcor)
 cor2pcor(cov(X))
@@ -290,12 +245,12 @@ Under this simple test, the moodel variance seems not constant, violating one of
 Nevertheless, as the only purpose of the first model is to be use as a preliminary context of the effects and ideas, this is not consider important. As the rest of the hypotesis are found, we just need to take into account that the efficiency is not very high, as can be expected from a singre explanatory variable model, and more knowing the nature of the variable and topic.
 
 
-# 2. Trivariate model.
+# 2. Previous. Trivariate model.
 
 The second model we are goint to run is the effect of videogames and income in the educational attainment. 
 
 ```{r}
-OLS2<-lm(act~video+income, data=dta)
+OLS2<-lm(act~video+income, data=data)
 summary(OLS2)
 ```
 
@@ -307,7 +262,7 @@ Even if this results can seem weird, they are in the line of previous researches
 
 Precisilly, if we run also this regression, this path seems to be clear.
 ```{r}
-o<-lm(data=dta, video~income)
+o<-lm(data=data, video~income)
 summary(o)
 ```
 
@@ -322,7 +277,7 @@ Multicollinearity check:
 
 ```{r}
 H<-c("act", "video", "income")
-X<-dta[H]
+X<-data[H]
 
 library(corpcor)
 cor2pcor(cov(X))
@@ -344,12 +299,12 @@ ols_test_breusch_pagan(OLS2, rhs = TRUE)
 
 Under this simple test, the moodel variance seems constant. Ever throught, this model is not expected to be efficient.
 
-# 3. Multivariate OLS.
+# 3. Previous. Multivariate OLS.
 
 The basic multiple OLS based on the theory presented is the following:
 
 ```{r}
-OLS3<-lm(data=dta, act~age+gender+gpa+religion+video+year+leisure+tv+race) 
+OLS3<-lm(data=data, act~age+gender+gpa+religion+video+year+leisure+tv+race) 
 summary(OLS)
 #plot(OLS, c(1))
 ```
@@ -365,7 +320,7 @@ Seems like could have multicolinearity. Le's check:
 par(mfrow=c(2,2))
 plot(OLS)
 
-X<-dta[,1:15]
+X<-data[,1:15]
 #install.packages("GGally")
 library(GGally)
 # ggpairs(X) #funciona, pero tarde tres horas.
@@ -408,12 +363,12 @@ However, in the present case, we can't go for the exclusion of the variables for
 As the problem seems to be more with tv, we're going to try to exclude it and also try using recode sqrt from the varibales age and gpa.
 
 ```{r}
-attach(dta)
-summary(dta)
-dta$age2<-sqrt(age)
+attach(data)
+summary(data)
+data$age2<-sqrt(age)
 gpa2<-sqrt(gpa)
 
-OLS4<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
+OLS4<-lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
 
 summary(OLS4)
 ```
@@ -469,8 +424,8 @@ library(goftest)
 
 
 ```{r}
-model<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
-ols_test_bartlett(dta, myvars)
+model<-lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
+ols_test_bartlett(data, myvars)
 ```
 
 We are testing the hypothesis that the group variances are equal. With a p-value less than 0.05, we reject the null hypothesis at the 0.05 significance level. We conclude that there is enought evidence to claim that the variances are not equal.
@@ -537,13 +492,13 @@ While heteroskedasticity does not cause bias in the coefficient estimates, it do
 
 
 
-#### Fix the heteroskedasticty problem.
+# 4.  Fix the heteroskedasticty problem.
 
 As is clear we have this problem, we have to chances. The first one in to fix this, and the second is to use a more appropiate method to deal with it.
 
 We have 5 possibilities:
 
-#### 1. Box-Cox transformation. (FAIL, variance of residuals is constant)
+### 1. Box-Cox transformation. (FAIL, variance of residuals is constant)
 
 Box-cox transformation is a mathematical transformation of the variable to make it approximate to a normal distribution. Often, doing a box-cox transformation of the Y variable solves the issue, which is exactly what I am going to do now.
 
@@ -553,7 +508,7 @@ Box-cox transformation is a mathematical transformation of the variable to make 
 library(lattice)
 library(caret)
 
-df<-dta
+df<-data
 distBCMod <- caret::BoxCoxTrans(df$act)
 print(distBCMod)
 ```
@@ -579,7 +534,7 @@ plot(lmMod_bc, c(1))
 
 Looks more or less the same. Complete fail.
 
-#### 2. robustbase. (Nice for bootstraping, but no for here) 
+### 2. robustbase. (Nice for bootstraping, but no for here) 
 
 Another way of dealing with heteroskedasticity is to use the lmrob() function from the {robustbase} package. This package is quite interesting, and offers quite a lot of functions for robust linear, and nonlinear, regression models. Running a robust linear regression is just the same as with lm():
 
@@ -591,7 +546,7 @@ library(robustbase)
 Now the OLS:
 
 ```{r}
-lmrobfit <- lmrob(data=dta,act~age2+gender+gpa2+religion+video+year+leisure+race+income)
+lmrobfit <- lmrob(data=data,act~age2+gender+gpa2+religion+video+year+leisure+race+income)
 summary(lmrobfit)
 ```
 
@@ -634,7 +589,7 @@ I have added a new column called regressions which contains the linear regressio
 We stoped the code as it takes a long time to run (not fixing it properly).
 
 
-#### 3. Coeftest. (Seems to help) 
+### 3. Coeftest. (Seems to help) 
 
 Now to check whether our data has heteroskedasticity or not, we will construct a variance-covariance matrix.
 
@@ -656,12 +611,12 @@ This seem to have fixed the standard errors in my regression.
 
 
 
-#### 4. Weighted Least Squares estimates (WLS) (same, slightly better) 
+### 4. Weighted Least Squares estimates (WLS) (same, slightly better) 
 
 We need our model:
 
 ```{r}
-LM<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
+LM<-lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
 ```
 
 
@@ -718,7 +673,7 @@ ncvTest(WLS)  # Non-constant variance test for WLS residuals
 Sadly, it seems that we haven't completely removed all of the heteroskedasticity. Therefore it would  make sense to now include robust standard errors as we clearly don’t have avoid the problem with heteroskedasticty.
 
 
-#### 5. Heteroskedasticity Robust Standard Errors
+### 5. Heteroskedasticity Robust Standard Errors
 
 
 Although heteroskedasticity does not produce biased OLS estimates, it leads to a bias in the variance-covariance matrix. This means that standard model testing methods such as t tests or F tests cannot be relied on any longer. This post provides an intuitive illustration of heteroskedasticity and covers the calculation of standard errors that are robust to it.
@@ -727,14 +682,14 @@ For this we need the restricted and unrestricted models:
 
 ```{r}
 # Estimate the model
-model<-lm(formula = act ~ video, data = dta)
+model<-lm(formula = act ~ video, data = data)
 
 # Print estimates and standard test statistics
 summary(model)
 ```
 
 
-### Robustness, F and  T-test.
+## Robustness, F and  T-test.
 
 Since we already know that the model above suffers from heteroskedasticity, we want to obtain heteroskedasticity robust standard errors and their corresponding t values. In R the function coeftest from the lmtest package can be used in combination with the function vcovHC from the sandwich package to do this.
 
@@ -754,7 +709,7 @@ Post-hypothesis testing.
 ```{r}
 # Estimate unrestricted model
 model_unres <- lm(formula = act ~ age2 + gender + gpa2 + religion + video + 
-    year + leisure + race + income, data = dta)
+    year + leisure + race + income, data = data)
 
 # F test
 anova(model, model_unres)
@@ -767,13 +722,14 @@ For a heteroskedasticity robust F test we perform a Wald test using the waldtest
 waldtest(model, model_unres, vcov = vcovHC(model_unres, type = "HC0"))
 ```
 
-The heteroskedasticity is not complitely avoid in this last model, but this is the best model possible. As the heteroskedasticity does not cause any bias, we just need to take into account the decreae in efficiency that is expected to be avoid using this other approaches presented.
+The heteroskedasticity is not complitely avoid in this last model, but this is the best model possible if we still want to use OLS. As the heteroskedasticity does not cause any bias, we just need to take into account the decrease in efficiency that is expected to be avoid using this other approaches presented.
 
 
 
 
 
-# 4. General checks and comprobations.
+
+# 5. General checks and comprobations.
 ## Correlations. 
 
 ```{r}
@@ -782,7 +738,7 @@ cor(income,gpa, use = "complete.obs") #0.1265339
 cor(income,age, use = "complete.obs") #-0.02129441
 cor(income,video, use = "complete.obs") #-0.00520055
 cor(income,religion, use = "complete.obs") #-0.003030037
-cor(income,paeduc, use = "complete.obs") #0.02794221
+cor(income,leisure, use = "complete.obs") #0.02794221
 cor(income,typehs, use = "complete.obs") #0.08599288
 
 
@@ -790,18 +746,18 @@ cor(gpa,age, use = "complete.obs") #-0.02913281
 cor(gpa,video, use = "complete.obs") #-0.1278687
 cor(gpa,religion, use = "complete.obs") #-0.1278687
 cor(gpa,gender, use = "complete.obs") #0.1285938
-cor(gpa,paeduc, use = "complete.obs") #-0.006640133
+cor(gpa,leisure, use = "complete.obs") #-0.006640133
 cor(gpa,typehs, use = "complete.obs") #0.008987206
 
 
 cor(video,religion, use = "complete.obs") #0.0658964
-cor(video,paeduc, use = "complete.obs") #0.008157152
+cor(video,leisure, use = "complete.obs") #0.008157152
 cor(video,typehs, use = "complete.obs") #-0.01454105
 
-cor(religion,paeduc, use = "complete.obs") #-0.0001594055
+cor(religion,leisure, use = "complete.obs") #-0.0001594055
 cor(religion,typehs, use = "complete.obs") #-0.07434896
 
-cor(paeduc,typehs, use = "complete.obs") #0.005558853
+cor(leisure,typehs, use = "complete.obs") #0.005558853
 
 
 age2<-sqrt(age)
@@ -845,7 +801,7 @@ coeftest(model, vcov = vcovHC(model, type = "HC0"))
 coeftest(model, vcov = vcovHC(model, type = "HC0"))
 
 # Estimate unrestricted model
-model_unres <- lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
+model_unres <- lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
 
 # F test
 anova(model, model_unres)
@@ -871,7 +827,7 @@ library(carData)
 library(car)
 
 lm(formula = act ~ income + gender + gpa + age + video + religion + 
-    paeduc + typehs, data = dta)
+    leisure + typehs, data = data)
 
 lht(OLS, c("video = 0"), white.adjust = "hc1")
 
@@ -896,7 +852,7 @@ Knowing the null hypothesis that is stated for us, and that the F-stat for the t
 
 
 
-# 5. 2SLS FINAL MODEL. IV selection and check.
+# 6. 2SLS (FINAL MODELS). IV selection and check.
 
 Instrumental variables (IVs) are used to control for confounding and measurement error in observational studies. They allow for the possibility of making causal inferences with observational data. Like propensity scores, IVs can adjust for both observed and unobserved confounding effects. Other methods of adjusting for confounding effects, which include stratification, matching and multiple regression methods, can only adjust for observed confounders. IVs have primarily been used in economics research, but have recently begun to appear in epidemiological studies.
 
@@ -907,14 +863,9 @@ There are two main criteria for defining an IV:
 (ii) It does not have a direct effect on the outcome variable, only indirectly through the treatment variable.
 A reliable implementation of an IV must satisfy these two criteria and utilize a sufficient sample size to allow for reasonable estimation of the treatment effect. If the first assumption is not satisfied, implying that the IV is associated with the outcome, then estimation of the IV effect may be biased. If the second assumption is not satisfied, implying that the IV does not affect the treatment variable then the random error will tend to have the same effect as the treatment. When selecting an IV, one must ensure that it only affects whether or not the treatment is received and is not associated with the outcome variable.
 
-Although IVs can control for confounding and measurement error in observational studies they have some limitations. We must be careful when dealing with many confounders and also if the correlation between the IV and the exposure variables is small. Both weak instruments and confounders produce large standard error which results in imprecise and biased results. Even when the two key assumptions are satisfied and the sample size is large, IVs cannot be used as a substitute for the use of clinical trials to make causal inference, although they are often useful in answering questions that an observational study can not. In general, instrumental variables are most suitable for studies in which there are only moderate to small confounding effects. They are least useful when there are strong confounding effects.
-
-
 ### Limitations:
 
 Although IVs can control for confounding and measurement error in observational studies they have some limitations. We must be careful when dealing with many confounders and also if the correlation between the IV and the exposure variables is small. Both weak instruments and confounders produce large standard error which results in imprecise and biased results. Even when the two key assumptions are satisfied and the sample size is large, IVs cannot be used as a substitute for the use of clinical trials to make causal inference, although they are often useful in answering questions that an observational study can not. In general, instrumental variables are most suitable for studies in which there are only moderate to small confounding effects. They are least useful when there are strong confounding effects.
-
-
 
 ## Check "Year" as a proper IV.
 
@@ -931,7 +882,7 @@ library(AER)
 library(stargazer)
 
 #OLS3<-lm(act ~ age2 + gender + gpa2 + religion + video + 
-#year + leisure + race + income, data = dta)
+#year + leisure + race + income, data = data)
 ```
 
 ## Two-Stage Least Squared Estimator (Main predictor).
@@ -965,7 +916,7 @@ The model will be: act= -14.64901(1.49014)+16.85159(video).
 Now we can perform the TSLS to check the results obtained.
 
 ```{r}
-ivreg1 <- ivreg(log(act) ~ video | year, data = dta)
+ivreg1 <- ivreg(log(act) ~ video | year, data = data)
 
 coeftest(ivreg1, vcov = vcovHC, type = "HC1")
 ```
@@ -984,7 +935,7 @@ log(act)=b0+b1video+b2gender+u.
 In this case we are going to add a log to the dependent variable (act) to avoid negative values and facilitate the visual recognition of the influences.
 
 ```{r}
-ivreg2 <- ivreg(log(act) ~ video + gender |gender + year, data = dta)
+ivreg2 <- ivreg(log(act) ~ video + gender |gender + year, data = data)
 
 coeftest(ivreg2, vcov = vcovHC, type = "HC1")
 ```
@@ -1002,7 +953,7 @@ act=b0+b1video+b2age2+gender+gpa2+religion+leisure+race+income+u.
 As previously, we are going to add a log to the dependent variable (act).
 
 ```{r}
-ivreg3 <- ivreg(log(act) ~ video + age+ gender+ (gpa^2)+ religion +leisure+race2+ income |age+ gender+ (gpa^2)+ religion +leisure+race2+ income+ year, data = dta)
+ivreg3 <- ivreg(log(act) ~ video + age+ gender+ (gpa^2)+ religion +leisure+race2+ income |age+ gender+ (gpa^2)+ religion +leisure+race2+ income+ year, data = data)
 
 coeftest(ivreg3, vcov = vcovHC, type = "HC1")
 ```
@@ -1106,13 +1057,14 @@ gaze.lines.ivreg.diagn(list(summ.fit1, summ.fit2), col=4, row=1:2, digits=2)
 
 
 
-# 6. Nice plots for the paper.
+# 7. Nice plots for the paper.
 
 In this section I`m gpoing to run some codes for graphs :)
 
 ##. Regression coefplot coefficients (Used).
 
 Libraries:
+
 ```{r}
 library(ggplot2)
 library(igraph)
@@ -1132,8 +1084,9 @@ coefplot(ivreg3) #interesting one
 
 ## Correlations plot:
 
+
 ```{r}
-M<-dta[,c("act", "video", "age", "gender", "gpa", "religion", "leisure", "race", "income")]
+M<-data[,c("act", "video", "age", "gender", "gpa", "religion", "leisure", "race", "income")]
 pairs(M)
 ```
 
@@ -1143,14 +1096,14 @@ pairs(M)
 ```{r}
 library(ggplot2)
 mydf <- ggpredict(ivreg3, terms = "video")
-mydf2 <- ggpredict(ivreg1, terms = "video")
-mydf3 <- ggpredict(ivreg2, terms = "video")
 
 ggplot(mydf, aes(x, predicted)) +
   geom_line() +
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1) 
-
-
-
-
 ```
+
+
+
+
+
+
