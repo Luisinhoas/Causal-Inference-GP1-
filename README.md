@@ -4,7 +4,6 @@
 
 This document includes the complete rmarkdown from the paper «Educational attainment and videogames: are the videogames a determining factor in the academic achievement?» In this same GitHub there is the proper rmarkdown document that can be download in order to run the codes easily, the used dataset and a pdf where this code is runned togueter with the results, with might be easier to observe the results. 
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 setwd("/Users/Luisinho/Desktop/Github.GP1")
@@ -160,9 +159,8 @@ As the problem seems to be more with tv, we're going to try to exclude it and al
 
 ```{r}
 age2<-sqrt(age)
-gpa2<-sqrt(gpa)
 
-OLS2<-lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
+OLS2<-lm(data=data, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income) 
 summary(OLS2)
 ```
 
@@ -362,9 +360,8 @@ As the problem seems to be more with tv, we're going to try to exclude it and al
 attach(data)
 summary(data)
 data$age2<-sqrt(age)
-gpa2<-sqrt(gpa)
 
-OLS4<-lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
+OLS4<-lm(data=data, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income)
 
 summary(OLS4)
 ```
@@ -420,7 +417,8 @@ library(goftest)
 
 
 ```{r}
-model<-lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
+model<-lm(data=data, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income) 
+myvars<-c("gender", "act", "gpa", "age", "video", "religion", "year", "leisure", "sport", "tv", "race", "weight", "income", "race2")
 ols_test_bartlett(data, myvars)
 ```
 
@@ -518,7 +516,7 @@ head(df, 6)
 The transformed data for our new regression model is ready. Lets build the model and check for heteroscedasticity.
 
 ```{r}
-lmMod_bc <- lm(data=df, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
+lmMod_bc <- lm(data=df, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income)
 bptest(lmMod_bc)
 ```
 
@@ -542,7 +540,7 @@ library(robustbase)
 Now the OLS:
 
 ```{r}
-lmrobfit <- lmrob(data=data,act~age2+gender+gpa2+religion+video+year+leisure+race+income)
+lmrobfit <- lmrob(data=data,act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income)
 summary(lmrobfit)
 ```
 
@@ -566,7 +564,7 @@ The column strap contains resamples of the original data. I will run my linear r
 #(boot_lin_reg <- boot_education %>% 
  #       mutate(regressions = 
  #                  map(strap, 
- ##                   ~lm(act~age2+gender+gpa2+religion+video+year+
+ ##                   ~lm(act~age2+gender+(gpa^2)+religion+video+year+
  #                         leisure+race+income, 
  #                          data = df))))
 
@@ -612,7 +610,7 @@ This seem to have fixed the standard errors in my regression.
 We need our model:
 
 ```{r}
-LM<-lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
+LM<-lm(data=data, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income) 
 ```
 
 
@@ -632,7 +630,7 @@ summary(logredid)
 And we can run the regression:
 
 ```{r}
-LM2<-lm(logredid~age2+gender+gpa2+religion+video+year+leisure+race+income)
+LM2<-lm(logredid~age2+gender+(gpa^2)+religion+video+year+leisure+race+income)
 summary(LM2)
 ```
 
@@ -648,7 +646,7 @@ summary(sq)
 And now we can compute a WLS:
 
 ```{r}
-WLS = lm(act~age2+gender+gpa2+religion+video+year+leisure+race+income, weights = 1/sq)
+WLS = lm(act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income, weights = 1/sq)
 summary(WLS)
 ```
 
@@ -704,7 +702,7 @@ Post-hypothesis testing.
 
 ```{r}
 # Estimate unrestricted model
-model_unres <- lm(formula = act ~ age2 + gender + gpa2 + religion + video + 
+model_unres <- lm(formula = act ~ age2 + gender + (gpa^2) + religion + video + 
     year + leisure + race + income, data = data)
 
 # F test
@@ -729,38 +727,26 @@ The heteroskedasticity is not complitely avoid in this last model, but this is t
 ## Correlations. 
 
 ```{r}
-cor(income,gender, use = "complete.obs") #0.1265339
-cor(income,gpa, use = "complete.obs") #0.1265339
-cor(income,age, use = "complete.obs") #-0.02129441
-cor(income,video, use = "complete.obs") #-0.00520055
-cor(income,religion, use = "complete.obs") #-0.003030037
-cor(income,leisure, use = "complete.obs") #0.02794221
-cor(income,typehs, use = "complete.obs") #0.08599288
+```{r}
+cor(income,gender, use = "complete.obs") 
+cor(income,gpa, use = "complete.obs") 
+cor(income,age, use = "complete.obs") 
+cor(income,video, use = "complete.obs") 
+cor(income,religion, use = "complete.obs")
+cor(income,leisure, use = "complete.obs") 
 
 
-cor(gpa,age, use = "complete.obs") #-0.02913281
-cor(gpa,video, use = "complete.obs") #-0.1278687
-cor(gpa,religion, use = "complete.obs") #-0.1278687
-cor(gpa,gender, use = "complete.obs") #0.1285938
-cor(gpa,leisure, use = "complete.obs") #-0.006640133
-cor(gpa,typehs, use = "complete.obs") #0.008987206
+cor(gpa,age, use = "complete.obs") 
+cor(gpa,video, use = "complete.obs")
+cor(gpa,religion, use = "complete.obs") 
+cor(gpa,gender, use = "complete.obs") 
+cor(gpa,leisure, use = "complete.obs") 
 
 
-cor(video,religion, use = "complete.obs") #0.0658964
-cor(video,leisure, use = "complete.obs") #0.008157152
-cor(video,typehs, use = "complete.obs") #-0.01454105
+cor(video,religion, use = "complete.obs") 
+cor(video,leisure, use = "complete.obs") 
 
-cor(religion,leisure, use = "complete.obs") #-0.0001594055
-cor(religion,typehs, use = "complete.obs") #-0.07434896
-
-cor(leisure,typehs, use = "complete.obs") #0.005558853
-
-
-age2<-sqrt(age)
-
-cor(age,age2, use = "complete.obs") #0.9982253 (obviously)
-
-#Same as the previous exercise, we use complete.obs to aboid the Nas.
+cor(religion,leisure, use = "complete.obs") 
 ```
 
  The correlation between every pair of variables doesn't seem very high.  
@@ -797,7 +783,7 @@ coeftest(model, vcov = vcovHC(model, type = "HC0"))
 coeftest(model, vcov = vcovHC(model, type = "HC0"))
 
 # Estimate unrestricted model
-model_unres <- lm(data=data, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
+model_unres <- lm(data=data, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income)
 
 # F test
 anova(model, model_unres)
@@ -877,7 +863,7 @@ library(sandwich)
 library(AER)
 library(stargazer)
 
-#OLS3<-lm(act ~ age2 + gender + gpa2 + religion + video + 
+#OLS3<-lm(act ~ age2 + gender + (gpa^2) + religion + video + 
 #year + leisure + race + income, data = data)
 ```
 
@@ -943,7 +929,7 @@ All seems to be as expected.
 
 We're going to use the same model in part 3:
 
-act=b0+b1video+b2age2+gender+gpa2+religion+leisure+race+income+u.
+act=b0+b1video+b2age2+gender+(gpa^2)+religion+leisure+race+income+u.
 
 
 As previously, we are going to add a log to the dependent variable (act).
@@ -954,11 +940,11 @@ ivreg3 <- ivreg(log(act) ~ video + age+ gender+ (gpa^2)+ religion +leisure+race2
 coeftest(ivreg3, vcov = vcovHC, type = "HC1")
 ```
 
-This model is very interesting. Seems that the year IV inclusion was able to drop down age and religion to insignificant effects. This makes much more sense than previous results without the IV regression, as we are talking about freshman and the variation in the ages shouldn't be that important (everybody start more or less at the same time), while religion (recode as a dummy non religious/ religious) effect, which was expected to be related to the type of institution they attended, was expected to be driven away by gpa2, the average grade they had in the end of the High School.
+This model is very interesting. Seems that the year IV inclusion was able to drop down age and religion to insignificant effects. This makes much more sense than previous results without the IV regression, as we are talking about freshman and the variation in the ages shouldn't be that important (everybody start more or less at the same time), while religion (recode as a dummy non religious/ religious) effect, which was expected to be related to the type of institution they attended, was expected to be driven away by (gpa^2), the average grade they had in the end of the High School.
 
 This model is:
 
-log(act)=1.00658952+0.23349375video+0.00126301gender+0.35521421gpa2+0.00791373religion-0.00854228leisure+0.01694882race+0.00813984income.
+log(act)=1.00658952+0.23349375video+0.00126301gender+0.35521421(gpa^2)+0.00791373religion-0.00854228leisure+0.01694882race+0.00813984income.
 
 
 ###  Checking validity.
