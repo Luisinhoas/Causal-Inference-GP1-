@@ -728,7 +728,7 @@ The heteroskedasticity is not complitely avoid in this last model, but this is t
 # 5. General checks and comprobations.
 ## Correlations. 
 
-```{r}
+
 ```{r}
 cor(income,gender, use = "complete.obs") 
 cor(income,gpa, use = "complete.obs") 
@@ -811,7 +811,7 @@ library(carData)
 library(car)
 
 lm(formula = act ~ income + gender + gpa + age + video + religion + 
-    leisure + typehs, data = data)
+    leisure, data = data)
 
 lht(OLS, c("video = 0"), white.adjust = "hc1")
 
