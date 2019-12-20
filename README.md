@@ -9,6 +9,10 @@ The models used in the paper can be found in section 6. 2SLS (FINAL MODELS).
 knitr::opts_chunk$set(echo = TRUE)
 setwd("/Users/Luisinho/Desktop/Github.GP1")
 ```
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+setwd("/Users/Luisinho/Desktop/Github.GP1")
+```
 
 *************
 # 0. Data and previous:
@@ -1045,7 +1049,7 @@ gaze.lines.ivreg.diagn(list(summ.fit1, summ.fit2), col=4, row=1:2, digits=2)
 
 In this section I`m gpoing to run some codes for graphs :)
 
-##. Regression coefplot coefficients (Used).
+## Regression coefplot coefficients (Used).
 
 Libraries:
 
@@ -1087,4 +1091,11 @@ ggplot(mydf, aes(x, predicted)) +
   geom_line() +
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1) 
 ```
+
+
+
+
+
+
+
 
