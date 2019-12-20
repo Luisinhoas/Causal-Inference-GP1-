@@ -1,22 +1,15 @@
-# «Educational attainment &amp; video games: analyzing the determining factors of Freshman's academic achievement»
-
-
-Andrade Silva, Luis Eduardo and Calvo López, Cristina. 
-
-
-Repository of used code of the paper «Educational attainment &amp; video games: analyzing the determining factors of Freshman's academic achievement», along with some extra checks, analysis and interesting outcomes.
-
-
 ---
-title: "La ultima puta vez que lo pruebo"
-author: "Cristina Calvo López y Luis Eduardo Andrade Silva"
-date: "18/12/2019"
- output: 
-  html_document:
-    keep_md: true
+title: "EDUCATIONAL ATTAINMENT AND VIDEOGAMES"
+author: "Luis Eduardo Andrade Silva & Cristina Calvo López"
+output:
+  pdf_document:
+    toc: TRUE
+    number_sections: false
+    keep_tex: yes
+    latex_engine: xelatex
 ---
 
-```{r setup, echo=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 setwd("/Users/Luisinho/Desktop")
 ```
@@ -65,20 +58,19 @@ dta$paeduc<-as.numeric(paeduc)
 dta$typehs<-as.numeric(typehs)
 dta$year<-as.numeric(YEAR)
 dta$sport<-as.numeric(HPW04)
-dta$party<-as.numeric(HPW05)
+dta$leisure<-as.numeric(HPW05)
 dta$tv<-as.numeric(HPW09)
 dta$race<-as.numeric(RACEGROUP)
 dta$weight<-as.numeric(weight)
+dta$race2<-as.numeric(race2)
 
-
-myvars<-c("typehs", "gender", "act", "gpa", "age", "video", "religion", "paeduc", "year", "party", "sport", "tv", "race", "weight", "income")
+myvars<-c("typehs", "gender", "act", "gpa", "age", "video", "religion", "paeduc", "year", "leisure", "sport", "tv", "race", "weight", "income", "race2")
 dta<-dta[myvars]
 
 dta<-na.exclude(dta)
 summary(dta)
 dta<-dta[complete.cases(dta),]
 attach(dta)
-
 ```
 
 
@@ -126,21 +118,21 @@ cor(age,age2, use = "complete.obs") #0.9982253 (obviously)
 ### Are these variables jointly significant? 
 
 
-We can try to test if the variables we have been stablising in the theoretical part are jointly significant. As we explained, it is expected that the main independent theoretical variable, videogames, is correlated (negatively, at least as is expected) with partying.
+We can try to test if the variables we have been stablising in the theoretical part are jointly significant. As we explained, it is expected that the main independent theoretical variable, videogames, is correlated (negatively, at least as is expected) with leisureing.
 
 For that, is better to use f-test. So we start making the hypothesis. An F-test will allow us to test the null that all of the coefficients are equal zero; that is that these variables jointly significance. So:
 
-H0: video-party=0.
-H1: video-party=/=0.
+H0: video-leisure=0.
+H1: video-leisure=/=0.
 
 Knowing this, we can conduct the test.
 
 ```{r}
 #library(MASS)
 OLS<-lm(formula = act ~ age2 + gender + (gpa^2) + religion + video + 
-    year + party + race + income, data = dta)
+    year + leisure + race + income, data = dta)
 
-lht(OLS, c("video = 0", "party = 0", "income=0"), white.adjust = "hc1")
+lht(OLS, c("video = 0", "leisure = 0", "income=0"), white.adjust = "hc1")
 ```
 
 Knowing the null hypothesis that is stated for us, and that the F-stat for the test is 31.389, with the p-value of (<2.2e-16). Df = 3 tells you the number of restrictions being tested. Obviously with such a low p-value we can reject the null hypothesis.
@@ -202,7 +194,7 @@ library(ppcor)
 pcor(X, method = "pearson")
 ```
 
-There are sligh correlctions between gpa&act (which makes sense), videogames&gender (-0.4609669112, maybe problematic), slighly high between gpa&party(-0.152744844) and videogames&tv(0.270858361), but nothing really worring.
+There are sligh correlctions between gpa&act (which makes sense), videogames&gender (-0.4609669112, maybe problematic), slighly high between gpa&leisure(-0.152744844) and videogames&tv(0.270858361), but nothing really worring.
 
 Not only that even some of the low correlation coefficients are also found to be highyl significant. Thus, the Farrar-Glauber test points out that X1 is the root cause of all multicollinearity problem.
 
@@ -216,7 +208,7 @@ As the problem seems to be more with tv, we're going to try to exclude it and al
 age2<-sqrt(age)
 gpa2<-sqrt(gpa)
 
-OLS2<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+party+race+income) 
+OLS2<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
 summary(OLS2)
 
 olsatester(OLS2)
@@ -278,6 +270,7 @@ cor2pcor(cov(X))
 ```
 
 ```{r}
+library(mctest)
 imcdiag(X,act)
 ```
 
@@ -356,7 +349,7 @@ Under this simple test, the moodel variance seems constant. Ever throught, this 
 The basic multiple OLS based on the theory presented is the following:
 
 ```{r}
-OLS3<-lm(data=dta, act~age+gender+gpa+religion+video+year+party+tv+race) 
+OLS3<-lm(data=dta, act~age+gender+gpa+religion+video+year+leisure+tv+race) 
 summary(OLS)
 #plot(OLS, c(1))
 ```
@@ -404,7 +397,7 @@ library(ppcor)
 pcor(X, method = "pearson")
 ```
 
-There are sligh correlctions between gpa&act (which makes sense), videogames&gender (-0.4609669112, maybe problematic), slighly high between gpa&party(-0.152744844) and videogames&tv(0.270858361), but nothing really worring.
+There are sligh correlctions between gpa&act (which makes sense), videogames&gender (-0.4609669112, maybe problematic), slighly high between gpa&leisure(-0.152744844) and videogames&tv(0.270858361), but nothing really worring.
 
 Not only that even some of the low correlation coefficients are also found to be highyl significant. Thus, the Farrar-Glauber test points out that X1 is the root cause of all multicollinearity problem.
 
@@ -420,7 +413,7 @@ summary(dta)
 dta$age2<-sqrt(age)
 gpa2<-sqrt(gpa)
 
-OLS4<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+party+race+income)
+OLS4<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
 
 summary(OLS4)
 ```
@@ -476,7 +469,7 @@ library(goftest)
 
 
 ```{r}
-model<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+party+race+income) 
+model<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
 ols_test_bartlett(dta, myvars)
 ```
 
@@ -574,7 +567,7 @@ head(df, 6)
 The transformed data for our new regression model is ready. Lets build the model and check for heteroscedasticity.
 
 ```{r}
-lmMod_bc <- lm(data=df, act~age2+gender+gpa2+religion+video+year+party+race+income)
+lmMod_bc <- lm(data=df, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
 bptest(lmMod_bc)
 ```
 
@@ -598,7 +591,7 @@ library(robustbase)
 Now the OLS:
 
 ```{r}
-lmrobfit <- lmrob(data=dta,act~age2+gender+gpa2+religion+video+year+party+race+income)
+lmrobfit <- lmrob(data=dta,act~age2+gender+gpa2+religion+video+year+leisure+race+income)
 summary(lmrobfit)
 ```
 
@@ -623,7 +616,7 @@ The column strap contains resamples of the original data. I will run my linear r
  #       mutate(regressions = 
  #                  map(strap, 
  ##                   ~lm(act~age2+gender+gpa2+religion+video+year+
- #                         party+race+income, 
+ #                         leisure+race+income, 
  #                          data = df))))
 
 ```
@@ -668,7 +661,7 @@ This seem to have fixed the standard errors in my regression.
 We need our model:
 
 ```{r}
-LM<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+party+race+income) 
+LM<-lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income) 
 ```
 
 
@@ -688,7 +681,7 @@ summary(logredid)
 And we can run the regression:
 
 ```{r}
-LM2<-lm(logredid~age2+gender+gpa2+religion+video+year+party+race+income)
+LM2<-lm(logredid~age2+gender+gpa2+religion+video+year+leisure+race+income)
 summary(LM2)
 ```
 
@@ -704,7 +697,7 @@ summary(sq)
 And now we can compute a WLS:
 
 ```{r}
-WLS = lm(act~age2+gender+gpa2+religion+video+year+party+race+income, weights = 1/sq)
+WLS = lm(act~age2+gender+gpa2+religion+video+year+leisure+race+income, weights = 1/sq)
 summary(WLS)
 ```
 
@@ -761,7 +754,7 @@ Post-hypothesis testing.
 ```{r}
 # Estimate unrestricted model
 model_unres <- lm(formula = act ~ age2 + gender + gpa2 + religion + video + 
-    year + party + race + income, data = dta)
+    year + leisure + race + income, data = dta)
 
 # F test
 anova(model, model_unres)
@@ -852,7 +845,7 @@ coeftest(model, vcov = vcovHC(model, type = "HC0"))
 coeftest(model, vcov = vcovHC(model, type = "HC0"))
 
 # Estimate unrestricted model
-model_unres <- lm(data=dta, act~age2+gender+gpa2+religion+video+year+party+race+income)
+model_unres <- lm(data=dta, act~age2+gender+gpa2+religion+video+year+leisure+race+income)
 
 # F test
 anova(model, model_unres)
@@ -903,11 +896,9 @@ Knowing the null hypothesis that is stated for us, and that the F-stat for the t
 
 
 
-# 5. IV selection and check.
+# 5. 2SLS FINAL MODEL. IV selection and check.
 
 Instrumental variables (IVs) are used to control for confounding and measurement error in observational studies. They allow for the possibility of making causal inferences with observational data. Like propensity scores, IVs can adjust for both observed and unobserved confounding effects. Other methods of adjusting for confounding effects, which include stratification, matching and multiple regression methods, can only adjust for observed confounders. IVs have primarily been used in economics research, but have recently begun to appear in epidemiological studies.
-
-A reliable implementation of an IV must satisfy these two criteria and utilize a sufficient sample size to allow for reasonable estimation of the treatment effect. If the first assumption is not satisfied, implying that the IV is associated with the outcome, then estimation of the IV effect may be biased. If the second assumption is not satisfied, implying that the IV does not affect the treatment variable then the random error will tend to have the same effect as the treatment. When selecting an IV, one must ensure that it only affects whether or not the treatment is received and is not associated with the outcome variable.
 
 ## Criteria.
 
@@ -919,7 +910,7 @@ A reliable implementation of an IV must satisfy these two criteria and utilize a
 Although IVs can control for confounding and measurement error in observational studies they have some limitations. We must be careful when dealing with many confounders and also if the correlation between the IV and the exposure variables is small. Both weak instruments and confounders produce large standard error which results in imprecise and biased results. Even when the two key assumptions are satisfied and the sample size is large, IVs cannot be used as a substitute for the use of clinical trials to make causal inference, although they are often useful in answering questions that an observational study can not. In general, instrumental variables are most suitable for studies in which there are only moderate to small confounding effects. They are least useful when there are strong confounding effects.
 
 
-## Limitations:
+### Limitations:
 
 Although IVs can control for confounding and measurement error in observational studies they have some limitations. We must be careful when dealing with many confounders and also if the correlation between the IV and the exposure variables is small. Both weak instruments and confounders produce large standard error which results in imprecise and biased results. Even when the two key assumptions are satisfied and the sample size is large, IVs cannot be used as a substitute for the use of clinical trials to make causal inference, although they are often useful in answering questions that an observational study can not. In general, instrumental variables are most suitable for studies in which there are only moderate to small confounding effects. They are least useful when there are strong confounding effects.
 
@@ -929,21 +920,21 @@ Although IVs can control for confounding and measurement error in observational 
 
 In the dataset we are using, the variable "year" appears as a proper IV variable, at least in the theoretical approach. There's no reason to think that taking the exam on one year or another can influence the grades. At the same time, seems reasonable to think that videogames are highly influenced by this, given that this kind of entertainment has been becoming more a more popular with the pass of the years. 
 
-
 ```{r}
 library(zoo)
 library(lmtest)
 library(survival)
 library(carData)
 library(car)
+library(sandwich)
 library(AER)
 library(stargazer)
 
 #OLS3<-lm(act ~ age2 + gender + gpa2 + religion + video + 
-#year + party + race + income, data = dta)
+#year + leisure + race + income, data = dta)
 ```
 
-### Two-Stage Least Squared Estimator (Main predictor).
+## Two-Stage Least Squared Estimator (Main predictor).
 
 We're going to try to use this IV in a TSLS model. For that, we start computing the first stage regression:
 
@@ -982,7 +973,8 @@ coeftest(ivreg1, vcov = vcovHC, type = "HC1")
 The result in both are the same, as expected.
 
 
-### Two Stage Least Squared (Bivariate)
+
+## Two Stage Least Squared (Bivariate)
 
 We're going to use this bivariate model:
 
@@ -999,18 +991,18 @@ coeftest(ivreg2, vcov = vcovHC, type = "HC1")
 
 All seems to be as expected.
 
-### Two-Stage Least Squared (Multiple)
+## Two-Stage Least Squared (Multiple)
 
 
 We're going to use the same model in part 3:
 
-act=b0+b1video+b2age2+gender+gpa2+religion+party+race+income+u.
+act=b0+b1video+b2age2+gender+gpa2+religion+leisure+race+income+u.
 
 
 As previously, we are going to add a log to the dependent variable (act).
 
 ```{r}
-ivreg3 <- ivreg(log(act) ~ video + age+ gender+ gpa2+ religion +party+race+ income |age+ gender+ gpa2+ religion +party+race+ income+ year, data = dta)
+ivreg3 <- ivreg(log(act) ~ video + age+ gender+ (gpa^2)+ religion +leisure+race2+ income |age+ gender+ (gpa^2)+ religion +leisure+race2+ income+ year, data = dta)
 
 coeftest(ivreg3, vcov = vcovHC, type = "HC1")
 ```
@@ -1019,7 +1011,7 @@ This model is very interesting. Seems that the year IV inclusion was able to dro
 
 This model is:
 
-log(act)=1.00658952+0.23349375video+0.00126301gender+0.35521421gpa2+0.00791373religion-0.00854228party+0.01694882race+0.00813984income.
+log(act)=1.00658952+0.23349375video+0.00126301gender+0.35521421gpa2+0.00791373religion-0.00854228leisure+0.01694882race+0.00813984income.
 
 
 ###  Checking validity.
@@ -1027,6 +1019,7 @@ log(act)=1.00658952+0.23349375video+0.00126301gender+0.35521421gpa2+0.00791373re
 We have to check for weakness, check if the IV exogeneity is violated (correlation between instrument and error term)
 
 First the robust coefficient summaries for all:
+
 ```{r}
 coeftest(ivreg1, vcov = vcovHC, type = "HC1")
 coeftest(ivreg2, vcov = vcovHC, type = "HC1")
@@ -1057,10 +1050,10 @@ Accepted at 0.001%.
 And the last model:
 
 ```{r}
-m3 <- lm(log(act) ~ video + age + gender + gpa2 + religion +     party + race + income)
+m3 <- lm(log(act) ~ video + age + gender + (gpa^2) + religion +     leisure + race + income)
 
 linearHypothesis(m3, 
-                 c("income = 0", "gender = 0", "gpa2=0", "religion=0", "party=0", "race=0"), 
+                 c("income = 0", "gender = 0", "video=0", "religion=0", "leisure=0", "race=0"), 
                  vcov = vcovHC, type = "HC1")
 ```
 
@@ -1068,6 +1061,46 @@ No problem here neither.
 
 This seem to say that this estimator is perfectly adecuate.
 
+### Diagnostics:
+```{r}
+require(lmtest)
+
+summ.fit1 <- summary(ivreg1, vcov. = function(x) vcovHC(x, type="HC0"), diagnostics=T)
+summ.fit2 <- summary(ivreg2, vcov. = function(x) vcovHC(x, type="HC0"), diagnostics=T)
+summ.fit3 <- summary(ivreg3, vcov. = function(x) vcovHC(x, type="HC0"), diagnostics=T)
+
+summ.fit1$diagnostics
+summ.fit2$diagnostics
+summ.fit3$diagnostics
+
+```
+
+
+This presentation provides a decent overview with worked examples.
+
+Weak instruments means that the instrument has a low correlation with the endogenous explanatory variable. This could result in a larger variance in the coefficient, and severe finite-sample bias. From the help file for AER, it says it does an F-test on the first stage regression; the null is that the instrument is weak. For the models, the null is rejected, so you can move forward with the assumption that the instrument is sufficiently strong.
+
+Wu-Hausman tests that IV is just as consistent as OLS, and since OLS is more efficient, it would be preferable. The null here is that they are equally consistent; in this output, Wu-Hausman is significant at the p<0.1 level, that would mean IV is consistent and OLS is not.
+
+Sargan tests overidentification restrictions. The idea is that if you have more than one instrument per endogenous variable, the model is overidentified, and you have some excess information. All of the instruments must be valid for the inferences to be correct. So it tests that all exogenous instruments are in fact exogenous, and uncorrelated with the model residuals. If it is significant, it means that you don't have valid instruments (somewhere in there, as this is a global test). In this case, this isn't a concern. 
+
+Same for direct imputations:
+```{r}
+gaze.lines.ivreg.diagn <- function(x, col="p-value", row=1:3, digits=2){
+    stopifnot(is.list(x))
+    out <- lapply(x, function(y){
+        stopifnot(class(y)=="summary.ivreg")
+        y$diagnostics[row, col, drop=FALSE]
+    })
+    out <- as.list(data.frame(t(as.data.frame(out)), check.names = FALSE))
+    for(i in 1:length(out)){
+        out[[i]] <- c(names(out)[i], round(out[[i]], digits=digits))
+    }
+    return(out)
+}
+gaze.lines.ivreg.diagn(list(summ.fit1, summ.fit2), row=1:2)
+gaze.lines.ivreg.diagn(list(summ.fit1, summ.fit2), col=4, row=1:2, digits=2)
+```
 
 
 
@@ -1077,7 +1110,7 @@ This seem to say that this estimator is perfectly adecuate.
 
 In this section I`m gpoing to run some codes for graphs :)
 
-##. Regression ggplot.
+##. Regression coefplot coefficients (Used).
 
 Libraries:
 ```{r}
@@ -1100,39 +1133,24 @@ coefplot(ivreg3) #interesting one
 ## Correlations plot:
 
 ```{r}
-M<-dta[,c("act", "video", "age", "gender", "gpa", "religion", "party", "race", "income")]
+M<-dta[,c("act", "video", "age", "gender", "gpa", "religion", "leisure", "race", "income")]
 pairs(M)
 ```
-## Regress Graph:
+
+
+## Marginal effects.
 
 ```{r}
-#M2<-na.omit(M[, c("act", "video", "gender")])
-#ggplot(M2, aes(x=as.numeric(video), y=as.numeric(act), col=gender)) +
-  geom_point(shape=1) +
-  geom_smooth(aes(col=factor("gender")), method= lm) +
-    labs(x="HPW", y="act")
+library(ggplot2)
+mydf <- ggpredict(ivreg3, terms = "video")
+mydf2 <- ggpredict(ivreg1, terms = "video")
+mydf3 <- ggpredict(ivreg2, terms = "video")
+
+ggplot(mydf, aes(x, predicted)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1) 
+
+
+
+
 ```
-
-
-## coefplot.
-
-```{r}
-coefplot(OLS4, predictors = c("video", "gender","income", "gpa"), ylab="Coefficient", xlab="Value", title="Composite ACT score")
-```
-
-
-
-# References.
-
-Kennedy, P. (2014). A Guide to Econometrics. Malden (Mass.): Blackwell Publishing 6th ed.
-Wilcox, R. R. (2010). Fundamentals of modern statistical methods: substantially improving power and accuracy. New York: Springer.
-Field, A. P., Miles, J. N. V., & Field, Z. C. (2012). Discovering statistics using R: And sex and drugs and rock ‘n’ roll. London: Sage. 
-Hayes, A. F., & Cai, L. (2007). Using heteroskedasticity-consistent standard error estimators in OLS regression: An introduction and software implementation. Behavior Research Methods, 39(4), 709-722. 
-https://www.r-econometrics.com/methods/hcrobusterrors/
-http://rstudio-pubs-static.s3.amazonaws.com/300060_d2f81f64f48443748969d7c1f6cc7249.html
-https://www.discoveringstatistics.com/2012/09/13/assumptions-part-2-homogeneity-of-variancehomoscedasticity/
-https://www.brodrigues.co/blog/2018-07-08-rob_stderr/
-
-
-
-
