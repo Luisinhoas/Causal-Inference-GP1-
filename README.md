@@ -320,7 +320,7 @@ Seems like could have multicolinearity. Le's check:
 par(mfrow=c(2,2))
 plot(OLS)
 
-X<-data[,1:15]
+X<-data[,1:12]
 #install.packages("GGally")
 library(GGally)
 # ggpairs(X) #funciona, pero tarde tres horas.
