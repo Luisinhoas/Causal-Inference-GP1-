@@ -1,11 +1,3 @@
-
-----
-title: "EDUCATIONAL ATTAINMENT AND VIDEOGAMES"
-author: "Luis Eduardo Andrade Silva & Cristina Calvo López"
-output: pdf_document
-indent: true
-----
-
 ----
 title: "EDUCATIONAL ATTAINMENT AND VIDEOGAMES"
 author: "Luis Eduardo Andrade Silva & Cristina Calvo López"
