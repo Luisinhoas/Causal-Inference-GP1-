@@ -1,6 +1,6 @@
 ---
-title: "EDUCATIONAL ATTAINMENT AND VIDEOGAMES"
-author: "Luis Eduardo Andrade Silva & Cristina Calvo López"
+"EDUCATIONAL ATTAINMENT AND VIDEOGAMES"
+"Luis Eduardo Andrade Silva & Cristina Calvo López"
 ---
 
 ```{r setup, include=FALSE}
