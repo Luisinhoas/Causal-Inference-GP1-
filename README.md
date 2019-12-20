@@ -1,12 +1,6 @@
 ---
 title: "EDUCATIONAL ATTAINMENT AND VIDEOGAMES"
 author: "Luis Eduardo Andrade Silva & Cristina Calvo López"
-output:
-  pdf_document:
-    toc: TRUE
-    number_sections: true
-    keep_tex: yes
-    latex_engine: xelatex
 ---
 
 ```{r setup, include=FALSE}
