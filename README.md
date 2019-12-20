@@ -5,7 +5,6 @@
 This document includes the complete rmarkdown (raw code) from the paper «Educational attainment and videogames: are the videogames a determining factor in the academic achievement?» In this same GitHub there is the proper rmarkdown document that can be download in order to run the codes easily, the used dataset and a pdf where this code is runned togueter with the results, with might be easier to observe the results. 
 
 The models used in the paper can be found in section 6. 2SLS (FINAL MODELS).
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 setwd("/Users/Luisinho/Desktop/Github.GP1")
@@ -937,6 +936,7 @@ act=b0+b1video+b2age2+gender+(gpa^2)+religion+leisure+race+income+u.
 As previously, we are going to add a log to the dependent variable (act).
 
 ```{r}
+library(AER)
 ivreg3 <- ivreg(log(act) ~ video + age+ gender+ (gpa^2)+ religion +leisure+race2+ income |age+ gender+ (gpa^2)+ religion +leisure+race2+ income+ year, data = data)
 
 coeftest(ivreg3, vcov = vcovHC, type = "HC1")
@@ -1078,6 +1078,8 @@ pairs(M)
 ## Marginal effects.
 
 ```{r}
+library(ggeffects)
+
 library(ggplot2)
 mydf <- ggpredict(ivreg3, terms = "video")
 
@@ -1085,9 +1087,4 @@ ggplot(mydf, aes(x, predicted)) +
   geom_line() +
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1) 
 ```
-
-
-
-
-
 
