@@ -4,6 +4,8 @@
 
 This document includes the complete rmarkdown (raw code) from the paper «Educational attainment and videogames: are the videogames a determining factor in the academic achievement?» In this same GitHub there is the proper rmarkdown document that can be download in order to run the codes easily, the used dataset and a pdf where this code is runned togueter with the results, with might be easier to observe the results. 
 
+The models used in the paper can be found in section 6. 2SLS (FINAL MODELS).
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 setwd("/Users/Luisinho/Desktop/Github.GP1")
