@@ -1,10 +1,8 @@
+EDUCATIONAL ATTAINMENT AND VIDEOGAMES
 
-title: "EDUCATIONAL ATTAINMENT AND VIDEOGAMES"
-author: "Luis Eduardo Andrade Silva & Cristina Calvo López"
-header-includes:
-   - \setlength\parindent{24pt}
-output:
-    pdf_document
+Luis Eduardo Andrade Silva & Cristina Calvo López
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
