@@ -1,49 +1,6 @@
----
-title: "This is a title"
-date: 25 May 2015
-output:
-html_document:
-theme: cerulean
----
-
-<style type="text/css">
-
-body{ /* Normal  */
-      font-size: 12px;
-  }
-td {  /* Table  */
-  font-size: 8px;
-}
-h1.title {
-  font-size: 38px;
-  color: DarkRed;
-}
-h1 { /* Header 1 */
-  font-size: 28px;
-  color: DarkBlue;
-}
-h2 { /* Header 2 */
-    font-size: 22px;
-  color: DarkBlue;
-}
-h3 { /* Header 3 */
-  font-size: 18px;
-  font-family: "Times New Roman", Times, serif;
-  color: DarkBlue;
-}
-code.r{ /* Code block */
-    font-size: 12px;
-}
-pre { /* Code block - determines code spacing between lines */
-    font-size: 14px;
-}
-</style>
-
-
-
 #EDUCATIONAL ATTAINMENT AND VIDEOGAMES
 
-Luis Eduardo Andrade Silva & Cristina Calvo López
+**Luis Eduardo Andrade Silva & Cristina Calvo López**
 
 
 
