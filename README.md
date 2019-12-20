@@ -16,7 +16,7 @@ date: "18/12/2019"
     keep_md: true
 ---
 
-```{r setup, include=FALSE}
+```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 setwd("/Users/Luisinho/Desktop")
 ```
