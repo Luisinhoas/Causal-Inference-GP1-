@@ -2,7 +2,10 @@
 
 **Luis Eduardo Andrade Silva & Cristina Calvo López**
 
-This document includes the complete rmarkdown (raw code) from the paper «Educational attainment and videogames: are the videogames a determining factor in the academic achievement?» In this same GitHub there is the proper rmarkdown document that can be download in order to run the codes easily, the used dataset and a pdf where this code is runned togueter with the results, with might be easier to observe the results. 
+This document includes the complete rmarkdown (raw code) from the paper «Educational attainment and videogames: are the videogames a determining factor in the academic achievement?» In this same GitHub there is the proper rmarkdown document that can be download in order to run the codes easil and the used dataset.
+
+
+The pdf where this code is runned togueter with the results, with might be easier to observe the results. can be download here: *https://we.tl/t-9bP2SCfnR5*
 
 The models used in the paper can be found in section 6. 2SLS (FINAL MODELS).
 ```{r setup, include=FALSE}
