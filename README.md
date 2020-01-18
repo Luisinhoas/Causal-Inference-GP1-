@@ -64,7 +64,7 @@ cor(religion,leisure, use = "complete.obs")
 
 age2<-sqrt(age)
 cor(age,age2, use = "complete.obs") #0.9982253 (obviously)
-#Same as the previous exercise, we use complete.obs to aboid the Nas.
+#Same as the previous exercise, I use complete.obs to aboid the Nas.
 ```
 
 The correlation between every pair of variables doesn't seem very high.  
@@ -77,7 +77,7 @@ I tried to test if the variables I have established in the theoretical part are 
 H0: video-leisure=0.
 H1: video-leisure=/=0.
 
-Knowing this, we can conduct the test.
+Knowing this, I can conduct the test.
 
 ```{r}
 #library(MASS)
@@ -87,12 +87,12 @@ OLS<-lm(formula = act ~ age2 + gender + (gpa^2) + religion + video +
 lht(OLS, c("video = 0", "leisure = 0", "income=0"), white.adjust = "hc1")
 ```
 
-Knowing the null hypothesis that is stated, and that the F-stat for the test is 31.389, with the p-value of (<2.2e-16). Df = 3 tells you the number of restrictions being tested. Obviously with such a low p-value I can reject the null hypothesis.
+Knowing the null hypothesis that is stated, and that the F-stat for the test is 31.389, with the p-value of (<2.2e-16). Df = 3 tells me the number of restrictions being tested. Obviously with such a low p-value I can reject the null hypothesis.
 
 
 ### Variance-covariance matrix.
 
-The var-cov matrix of our regression.
+The var-cov matrix of my regression.
 
 ```{r}
 library(sandwich)
@@ -100,8 +100,8 @@ var_cov<-vcovHC(OLS, type = "HC4")
 coeftest(OLS, df = Inf, var_cov)
 ```
 
-Now vcovHC() function creates a variance “ covariance matrix. The first parameter is the regression model I have made. Keep omega as NULL. The type parameter refers to what measure of heteroskedasticity is being used. There are 5 types from HC0 to HC4. HC4 is the latest and we use that. You can read more about it in the sandwich package.
-This is our variance- covariance matrix. The independent variables are listed both in column and rows. The diagonal elements show the variance of each variable with itself. The diagonal values should have been constant, but since they vary, we can start to detect the presence of heteroskedasticity.
+Now vcovHC() function creates a variance “ covariance matrix. The first parameter is the regression model I have made. Keep omega as NULL. The type parameter refers to what measure of heteroskedasticity is being used. There are 5 types from HC0 to HC4. HC4 is the latest and I use that. You can read more about it in the sandwich package.
+This is my variance- covariance matrix. The independent variables are listed both in column and rows. The diagonal elements show the variance of each variable with itself. The diagonal values should have been constant, but since they vary, we can start to detect the presence of heteroskedasticity.
 
 ### a. Multicolinearity check.
 
@@ -143,8 +143,8 @@ pcor(X, method = "pearson")
 There are sligh correlctions between gpa&act (which makes sense), videogames&gender (-0.4609669112, maybe problematic), slighly high between gpa&leisure(-0.152744844) and videogames&tv(0.270858361), but nothing really worring.
 Not only that even some of the low correlation coefficients are also found to be highyl significant. Thus, the Farrar-Glauber test points out that X1 is the root cause of all multicollinearity problem.
 There are several remedial measure to deal with the problem of multicollinearity such Prinicipal Component Regression, Ridge Regression, Stepwise Regression etc.
-However, in the present case, I can't go for the exclusion of the variables for which the VIF values are above 10 (I dont have any) and as well as the concerned variable logically seems to be redundant. Age and experience will certainly be correlated. So, why to use both of them? If we use ‘age’ or ‘age-squared’, it will reflect the experience of the respondent also. Thus, we try to build a model by excluding ‘experience’, estimate the model and go for further diagnosis for the presence of multicollinearity.
-As the problem seems to be more with tv, we're going to try to exclude it and also try using recode sqrt from the varibales age and gpa.
+However, in the present case, I can't go for the exclusion of the variables for which the VIF values are above 10 (I dont have any) and as well as the concerned variable logically seems to be redundant. Age and experience will certainly be correlated. So, why to use both of them? If I use ‘age’ or ‘age-squared’, it will reflect the experience of the respondent also. Thus, I try to build a model by excluding ‘experience’, estimate the model and go for further diagnosis for the presence of multicollinearity.
+As the problem seems to be more with tv, I'm going to try to exclude it and also try using recode sqrt from the varibales age and gpa.
 
 ```{r}
 age2<-sqrt(age)
@@ -153,18 +153,18 @@ OLS2<-lm(data=data, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+inc
 summary(OLS2)
 ```
 
-We also seem to have reduced the vif
+I also seem to have reduced the vif
 ```{r}
 vif(OLS)
 ```
-We can check now again the multicoliniarity issue.
+I can check now again the multicoliniarity issue.
 
 
 ### b. Homoscedasticity problem.
 Now I focused in the next problem: it seems that I also have a problem of Heterocedasticity. There are several ways to control this, but lets first focus on measuring if this is right.
 
 # 1. Previous. Bivariate OLS:
-The most simple OLS we have to run is the effect of the main independent variable (viodegames) on our dependent (average SAT grade).
+The most simple OLS I have to run is the effect of the main independent variable (viodegames) on my dependent (average SAT grade).
 
 ```{r}
 OLS<-lm(data=data, act~video) 
@@ -193,7 +193,7 @@ cor1<-cor(act,video, use="complete.obs") #complete.obs is a method to compute
 cor1
 ```
 
-The correlation between log(income) and prppov is 0.0359588. Is a not very high, although is a positive correlation (so when one increases, the other variable increases). This is in the same line we were expected.
+The correlation between log(income) and prppov is 0.0359588. Is a not very high, although is a positive correlation (so when one increases, the other variable increases). This is in the same line I was expecting.
 
 ```{r}
 H<-c("act", "video")
@@ -323,8 +323,8 @@ pcor(X, method = "pearson")
 There are sligh correlations between gpa&act (which makes sense), videogames&gender (-0.4609669112, maybe problematic), slighly high between gpa&leisure(-0.152744844) and videogames&tv(0.270858361), but nothing really worring.
 Not only that even some of the low correlation coefficients are also found to be highyl significant. Thus, the Farrar-Glauber test points out that X1 is the root cause of all multicollinearity problem.
 There are several remedial measure to deal with the problem of multicollinearity such Prinicipal Component Regression, Ridge Regression, Stepwise Regression etc.
-However, in the present case, I can't go for the exclusion of the variables for which the VIF values are above 10 (we dont have any) and as well as the concerned variable logically seems to be redundant. Age and experience will certainly be correlated. So, why to use both of them? If I use ‘age’ or ‘age-squared’, it will reflect the experience of the respondent also. Thus, we try to build a model by excluding ‘experience’, estimate the model and go for further diagnosis for the presence of multicollinearity.
-As the problem seems to be more with tv, we're going to try to exclude it and also try using recode sqrt from the varibales age and gpa.
+However, in the present case, I can't go for the exclusion of the variables for which the VIF values are above 10 (I dont have any) and as well as the concerned variable logically seems to be redundant. Age and experience will certainly be correlated. So, why to use both of them? If I use ‘age’ or ‘age-squared’, it will reflect the experience of the respondent also. Thus, wI try to build a model by excluding ‘experience’, estimate the model and go for further diagnosis for the presence of multicollinearity.
+As the problem seems to be more with tv, I'm going to try to exclude it and also try using recode sqrt from the varibales age and gpa.
 
 ```{r}
 attach(data)
@@ -345,7 +345,7 @@ I can check now again the multicoliniarity issue.
 
 
 ### b. Homoscedasticity problem.
-Now I have to focus in the next problem: it seems that we also have a problem of Heterocedasticity. There are several ways to control this, but lets first focus on measuring if this is right.
+Now I have to focus in the next problem: it seems that I also have a problem of Heterocedasticity. There are several ways to control this, but lets first focus on measuring if this is right.
 
 #### Measuring the variance 4 ways:
 One of the assumptions made about residuals/errors in OLS regression is that the errors have the same but unknown variance. This is known as constant variance or homoscedasticity. When this assumption is violated, the problem is known as heteroscedasticity.
@@ -365,7 +365,7 @@ F Test
 ### Bartlett Test. (Variances not equal)
 
 Bartlett’s test is used to test if variances across samples is equal. It is sensitive to departures from normality. The Levene test is an alternative test that is less sensitive to departures from normality.
-You can perform the test using 2 continuous variables, one continuous and one grouping variable, a formula or a linear model.
+I can perform the test using 2 continuous variables, one continuous and one grouping variable, a formula or a linear model.
 
 ```{r}
 
@@ -389,8 +389,8 @@ myvars<-c("gender", "act", "gpa", "age", "video", "religion", "year", "leisure",
 ols_test_bartlett(data, myvars)
 ```
 
-I'm testing the hypothesis that the group variances are equal. With a p-value less than 0.05, we reject the null hypothesis at the 0.05 significance level. We conclude that there is enought evidence to claim that the variances are not equal.
-Equal variances across samples is called homogeneity of variance. The Levene test is less sensitive than the Bartlett test to departures from normality. If you have strong evidence that your data do in fact come from a normal, or nearly normal, distribution, then Bartlett's test has better performance.
+I'm testing the hypothesis that the group variances are equal. With a p-value less than 0.05, I reject the null hypothesis at the 0.05 significance level. I conclude that there is enought evidence to claim that the variances are not equal.
+Equal variances across samples is called homogeneity of variance. The Levene test is less sensitive than the Bartlett test to departures from normality. If I have strong evidence that my data do in fact come from a normal, or nearly normal, distribution, then Bartlett's test has better performance.
 
 ### Breusch Pagan Test (No constant variances)
 Breusch Pagan Test was introduced by Trevor Breusch and Adrian Pagan in 1979. It is used to test for heteroskedasticity in a linear regression model and assumes that the error terms are normally distributed. It tests whether the variance of the errors from a regression is dependent on the values of the independent variables. It is a x2 test.
@@ -415,7 +415,7 @@ Reject the null: variance is heterogeneus.
 
 ### F Test (Variance is not homogenous)
 
-F Test for heteroskedasticity under the assumption that the errors are independent and identically distributed (i.i.d.). You can perform the test using the fitted values of the model, the predictors in the model and a subset of the independent variables.
+F Test for heteroskedasticity under the assumption that the errors are independent and identically distributed (i.i.d.). I can perform the test using the fitted values of the model, the predictors in the model and a subset of the independent variables.
 Use independent variables of the model
 
 ```{r}
@@ -484,7 +484,7 @@ lmrobfit <- lmrob(data=data,act~age2+gender+(gpa^2)+religion+video+year+leisure+
 summary(lmrobfit)
 ```
 
-This gives you different estimates than when fitting a linear regression model. The estimates should be the same, only the standard errors should be different. This is because the estimation method is different, and is also robust to outliers.
+This gives me different estimates than when fitting a linear regression model. The estimates should be the same, only the standard errors should be different. This is because the estimation method is different, and is also robust to outliers.
 
 Finally, it is also possible to bootstrap the standard errors. For this I will use the bootstrap() function from the {modelr} package:
 
@@ -525,7 +525,7 @@ I stoped the code as it takes a long time to run (not fixing it properly).
 
 ### 3. Coeftest. (Seems to help) 
 
-Now to check whether the data has heteroskedasticity or not, we will construct a variance-covariance matrix.
+Now to check whether the data has heteroskedasticity or not, I will construct a variance-covariance matrix.
 
 ```{r}
 library(sandwich)
@@ -533,9 +533,9 @@ library(lmtest)
 vcovHC(OLS2, omega = NULL, type = "HC4")
 ```
 
-Now vcovHC() function creates a variance “ covariance matrix for you. The first parameter is the regression model we have made. Keep omega as NULL. The type parameter refers to what measure of heteroskedasticity is being used. There are 5 types from HC0 to HC4. HC4 is the latest and we use that. You can read more about it in the sandwich package.
+Now vcovHC() function creates a variance “ covariance matrix. The first parameter is the regression model I have made. Keep omega as NULL. The type parameter refers to what measure of heteroskedasticity is being used. There are 5 types from HC0 to HC4. HC4 is the latest and I use that. You can read more about it in the sandwich package.
 
-Finally to remove this heteroskedasticity, we use the coeftest() function in R.
+Finally to remove this heteroskedasticity, I use the coeftest() function in R.
 
 ```{r}
 coeftest(OLS, df = Inf, vcovHC(OLS, omega = NULL, type = "HC4"))
@@ -544,27 +544,26 @@ coeftest(OLS, df = Inf, vcovHC(OLS, omega = NULL, type = "HC4"))
 This seem to have fixed the standard errors in my regression.
 
 ### 4. Weighted Least Squares estimates (WLS) (same, slightly better) 
-We need our model:
+model:
 
 ```{r}
 LM<-lm(data=data, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income) 
 ```
 
-
-Now we pit the residuals:
+Now I pit the residuals:
 ```{r}
 resid = LM$residuals
 summary(resid)
 ```
 
-Now, as we want log(uˆ2), we create this dependent variable.
+Now, as I want log(uˆ2), I create this dependent variable.
 
 ```{r}
 logredid<-log(resid^2) 
 summary(logredid)
 ```
 
-And we can run the regression:
+And I can run the regression:
 
 ```{r}
 LM2<-lm(logredid~age2+gender+(gpa^2)+religion+video+year+leisure+race+income)
@@ -580,7 +579,7 @@ sq = sqrt(exp(fit)) # Square root and exponentiate this to get an estimate for t
 summary(sq)
 ```
 
-And now we can compute a WLS:
+And now I can compute a WLS:
 
 ```{r}
 WLS = lm(act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income, weights = 1/sq)
@@ -593,20 +592,18 @@ While the OLS was:
 summary(OLS2)
 ```
 
-The coefficients look pretty similar from the OLS to the WLS. We can see that the standard errors have slighly fallen in the WLS model.
+The coefficients look pretty similar from the OLS to the WLS. I can see that the standard errors have slighly fallen in the WLS model.
 
-Now we can chest to see if there is still heteroskedasticity in the WLS model.
+Now I can chest to see if there is still heteroskedasticity in the WLS model.
 
 ```{r}
 ncvTest(WLS)  # Non-constant variance test for WLS residuals
 ```
 
-Sadly, it seems that we haven't completely removed all of the heteroskedasticity. Therefore it would  make sense to now include robust standard errors as we clearly don’t have avoid the problem with heteroskedasticty.
+Sadly, it seems that I haven't completely removed all of the heteroskedasticity. Therefore it would  make sense to now include robust standard errors as I clearly don’t have avoid the problem with heteroskedasticty.
 
 
 ### 5. Heteroskedasticity Robust Standard Errors
-
-
 Although heteroskedasticity does not produce biased OLS estimates, it leads to a bias in the variance-covariance matrix. This means that standard model testing methods such as t tests or F tests cannot be relied on any longer. This post provides an intuitive illustration of heteroskedasticity and covers the calculation of standard errors that are robust to it.
 
 For this we need the restricted and unrestricted models:
@@ -621,10 +618,9 @@ summary(model)
 
 
 ## Robustness, F and  T-test.
+Since I already know that the model above suffers from heteroskedasticity, I want to obtain heteroskedasticity robust standard errors and their corresponding t values. In R the function coeftest from the lmtest package can be used in combination with the function vcovHC from the sandwich package to do this.
 
-Since we already know that the model above suffers from heteroskedasticity, we want to obtain heteroskedasticity robust standard errors and their corresponding t values. In R the function coeftest from the lmtest package can be used in combination with the function vcovHC from the sandwich package to do this.
-
-The first argument of the coeftest function contains the output of the lm function and calculates the t test based on the variance-covariance matrix provided in the vcov argument. The vcovHC function produces that matrix and allows to obtain several types of heteroskedasticity robust versions of it. In our case we obtain a simple White standard error, which is indicated by type = "HC0". Other, more sophisticated methods are described in the documentation of the function, vcovHC.
+The first argument of the coeftest function contains the output of the lm function and calculates the t test based on the variance-covariance matrix provided in the vcov argument. The vcovHC function produces that matrix and allows to obtain several types of heteroskedasticity robust versions of it. In my case we obtain a simple White standard error, which is indicated by type = "HC0". Other, more sophisticated methods are described in the documentation of the function, vcovHC.
 
 ```{r}
 # Load libraries
@@ -648,21 +644,14 @@ anova(model, model_unres)
 
 For a heteroskedasticity robust F test we perform a Wald test using the waldtest function, which is also contained in the lmtest package. It can be used in a similar way as the anova function, i.e., it uses the output of the restricted and unrestricted model and the robust variance-covariance matrix as argument vcov. Based on the variance-covariance matrix of the unrestriced model we, again, calculate White standard errors.
 
-
 ```{r}
 waldtest(model, model_unres, vcov = vcovHC(model_unres, type = "HC0"))
 ```
 
-The heteroskedasticity is not complitely avoid in this last model, but this is the best model possible if we still want to use OLS. As the heteroskedasticity does not cause any bias, we just need to take into account the decrease in efficiency that is expected to be avoid using this other approaches presented.
-
-
-
-
-
+The heteroskedasticity is not complitely avoid in this last model, but this is the best model possible if I still want to use OLS. As the heteroskedasticity does not cause any bias, I just need to take into account the decrease in efficiency that is expected to be avoid using this other approaches presented.
 
 # 5. General checks and comprobations.
 ## Correlations. 
-
 
 ```{r}
 cor(income,gender, use = "complete.obs") 
@@ -671,45 +660,37 @@ cor(income,age, use = "complete.obs")
 cor(income,video, use = "complete.obs") 
 cor(income,religion, use = "complete.obs")
 cor(income,leisure, use = "complete.obs") 
-
-
 cor(gpa,age, use = "complete.obs") 
 cor(gpa,video, use = "complete.obs")
 cor(gpa,religion, use = "complete.obs") 
 cor(gpa,gender, use = "complete.obs") 
 cor(gpa,leisure, use = "complete.obs") 
-
-
 cor(video,religion, use = "complete.obs") 
 cor(video,leisure, use = "complete.obs") 
-
 cor(religion,leisure, use = "complete.obs") 
 ```
 
- The correlation between every pair of variables doesn't seem very high.  
+The correlation between every pair of variables doesn't seem very high.  
  
 ## Variance-covariance matrix.
-
-The var-cov matrix of our regression.
+The var-cov matrix of my regression.
 
 ```{r}
 var_cov<-vcovHC(OLS, type = "HC4")
 coeftest(OLS, df = Inf, var_cov)
 ```
 
-
-Now vcovHC() function creates a variance “ covariance matrix for you. The first parameter is the regression model we have made. Keep omega as NULL. The type parameter refers to what measure of heteroskedasticity is being used. There are 5 types from HC0 to HC4. HC4 is the latest and we use that. You can read more about it in the sandwich package.
-
-This is our variance- covariance matrix. The independent variables are listed both in column and rows. The diagonal elements show the variance of each variable with itself. The diagonal values should have been constant, but since they vary, we can detect the presence of heteroskedasticity!
+Now vcovHC() function creates a variance “ covariance matrix. The first parameter is the regression model I have made. Keep omega as NULL. The type parameter refers to what measure of heteroskedasticity is being used. There are 5 types from HC0 to HC4. HC4 is the latest and we use that. You can read more about it in the sandwich package.
+This is my variance- covariance matrix. The independent variables are listed both in column and rows. The diagonal elements show the variance of each variable with itself. The diagonal values should have been constant, but since they vary, we can detect the presence of heteroskedasticity!
 
 To get the F test:
 
 ```{r}
  waldtest(OLS, vcov = vcovHC)
 ```
-For a heteroskedasticity robust F test we perform a Wald test using the waldtest function, which is also contained in the lmtest package. It can be used in a similar way as the anova function, i.e., it uses the output of the restricted and unrestricted model and the robust variance-covariance matrix as argument vcov. Is based on the variance-covariance matrix of the unrestriced model.
 
-Amother try:
+For a heteroskedasticity robust F test we perform a Wald test using the waldtest function, which is also contained in the lmtest package. It can be used in a similar way as the anova function, i.e., it uses the output of the restricted and unrestricted model and the robust variance-covariance matrix as argument vcov. Is based on the variance-covariance matrix of the unrestriced model.
+Another try:
 
 ```{r}
 # Estimate the model
@@ -729,17 +710,13 @@ anova(model, model_unres)
 waldtest(model, model_unres, vcov = vcovHC(model_unres, type = "HC0"))
 ```
 
-
 ## Jointly significance 
-
-
 We can test if the variables are jointly significant now. For that, is better to use f-test (*no p-value of a normal regression, the p-value f the t-test)*. So we start making the hypothesis. An F-test will allow us to test the null that all of the coefficients are equal zero; that is that these variables jointly significance. So:
 
 H0: hseval-log(income)=0.
 H1: hseval-log(income)=/=0.
 
 Knowing this, we can conduct the test.
-
 
 ```{r}
 library(carData)
@@ -758,37 +735,22 @@ lht(OLS, c("video = 0"), white.adjust = "hc1")
 #used for the test. Always include this (part of the code)
 ```
 
-Knowing the null hypothesis that is stated for us, and that the F-stat for the test is 31.389, with the p-value of (<2.2e-16). Df = 3 tells you the number of restrictions being tested. Obviously with such a low p-value we can reject the null hypothesis.
-
-
-
-
-
-
-
-
-
-
-
+Knowing the null hypothesis that is stated, and that the F-stat for the test is 31.389, with the p-value of (<2.2e-16). Df = 3 tells me the number of restrictions being tested. Obviously with such a low p-value we can reject the null hypothesis.
 
 # 6. 2SLS (FINAL MODELS). IV selection and check.
-
 Instrumental variables (IVs) are used to control for confounding and measurement error in observational studies. They allow for the possibility of making causal inferences with observational data. Like propensity scores, IVs can adjust for both observed and unobserved confounding effects. Other methods of adjusting for confounding effects, which include stratification, matching and multiple regression methods, can only adjust for observed confounders. IVs have primarily been used in economics research, but have recently begun to appear in epidemiological studies.
 
 ## Criteria.
-
 There are two main criteria for defining an IV:
 (i) It causes variation in the treatment variable;
 (ii) It does not have a direct effect on the outcome variable, only indirectly through the treatment variable.
 A reliable implementation of an IV must satisfy these two criteria and utilize a sufficient sample size to allow for reasonable estimation of the treatment effect. If the first assumption is not satisfied, implying that the IV is associated with the outcome, then estimation of the IV effect may be biased. If the second assumption is not satisfied, implying that the IV does not affect the treatment variable then the random error will tend to have the same effect as the treatment. When selecting an IV, one must ensure that it only affects whether or not the treatment is received and is not associated with the outcome variable.
 
 ### Limitations:
-
-Although IVs can control for confounding and measurement error in observational studies they have some limitations. We must be careful when dealing with many confounders and also if the correlation between the IV and the exposure variables is small. Both weak instruments and confounders produce large standard error which results in imprecise and biased results. Even when the two key assumptions are satisfied and the sample size is large, IVs cannot be used as a substitute for the use of clinical trials to make causal inference, although they are often useful in answering questions that an observational study can not. In general, instrumental variables are most suitable for studies in which there are only moderate to small confounding effects. They are least useful when there are strong confounding effects.
+Although IVs can control for confounding and measurement error in observational studies they have some limitations. I must be careful when dealing with many confounders and also if the correlation between the IV and the exposure variables is small. Both weak instruments and confounders produce large standard error which results in imprecise and biased results. Even when the two key assumptions are satisfied and the sample size is large, IVs cannot be used as a substitute for the use of clinical trials to make causal inference, although they are often useful in answering questions that an observational study can not. In general, instrumental variables are most suitable for studies in which there are only moderate to small confounding effects. They are least useful when there are strong confounding effects.
 
 ## Check "Year" as a proper IV.
-
-In the dataset we are using, the variable "year" appears as a proper IV variable, at least in the theoretical approach. There's no reason to think that taking the exam on one year or another can influence the grades. At the same time, seems reasonable to think that videogames are highly influenced by this, given that this kind of entertainment has been becoming more a more popular with the pass of the years. 
+In the dataset I'm using, the variable "year" appears as a proper IV variable, at least in the theoretical approach. There's no reason to think that taking the exam on one year or another can influence the grades. At the same time, seems reasonable to think that videogames are highly influenced by this, given that this kind of entertainment has been becoming more a more popular with the pass of the years. 
 
 ```{r}
 library(zoo)
@@ -805,8 +767,7 @@ library(stargazer)
 ```
 
 ## Two-Stage Least Squared Estimator (Main predictor).
-
-We're going to try to use this IV in a TSLS model. For that, we start computing the first stage regression:
+I'm going to try to use this IV in a TSLS model. For that, we start computing the first stage regression:
 
 ```{r}
 s1 <- lm(video~ year)
@@ -815,13 +776,11 @@ coeftest(s1, vcov = vcovHC, type = "HC1")
 ```
 
 The first stage regression is: video= 24.259376 (6.058020)+ 0.013265year(0.013265).
-
 This model predicts the relation between hours per week playing video games and the year the interview was conducted. This appears to be as expected.
 
 ```{r}
 s1_pred <- s1$fitted.values
 ```
-
 
 The second stage regression is:
 
@@ -831,8 +790,7 @@ coeftest(s2, vcov = vcovHC)
 ```
 
 The model will be: act= -14.64901(1.49014)+16.85159(video).
-
-Now we can perform the TSLS to check the results obtained.
+Now I can perform the TSLS to check the results obtained.
 
 ```{r}
 ivreg1 <- ivreg(log(act) ~ video | year, data = data)
@@ -842,16 +800,12 @@ coeftest(ivreg1, vcov = vcovHC, type = "HC1")
 
 The result in both are the same, as expected.
 
-
-
 ## Two Stage Least Squared (Bivariate)
-
-We're going to use this bivariate model:
+I'm going to use this bivariate model:
 
 log(act)=b0+b1video+b2gender+u.
 
-
-In this case we are going to add a log to the dependent variable (act) to avoid negative values and facilitate the visual recognition of the influences.
+In this case I'm going to add a log to the dependent variable (act) to avoid negative values and facilitate the visual recognition of the influences.
 
 ```{r}
 ivreg2 <- ivreg(log(act) ~ video + gender |gender + year, data = data)
@@ -862,14 +816,11 @@ coeftest(ivreg2, vcov = vcovHC, type = "HC1")
 All seems to be as expected.
 
 ## Two-Stage Least Squared (Multiple)
-
-
-We're going to use the same model in part 3:
+I'm going to use the same model in part 3:
 
 act=b0+b1video+b2age2+gender+(gpa^2)+religion+leisure+race+income+u.
 
-
-As previously, we are going to add a log to the dependent variable (act).
+As previously, I'm going to add a log to the dependent variable (act).
 
 ```{r}
 library(AER)
@@ -884,11 +835,9 @@ This model is:
 
 log(act)=1.00658952+0.23349375video+0.00126301gender+0.35521421(gpa^2)+0.00791373religion-0.00854228leisure+0.01694882race+0.00813984income.
 
-
 ###  Checking validity.
 
 We have to check for weakness, check if the IV exogeneity is violated (correlation between instrument and error term)
-
 First the robust coefficient summaries for all:
 
 ```{r}
@@ -906,6 +855,7 @@ linearHypothesis(m1,
                  "video = 0", 
                  vcov = vcovHC, type = "HC1")
 ```
+
 Perfect.
 
 ```{r}
@@ -916,8 +866,8 @@ linearHypothesis(m2,
                  "video = 0", 
                  vcov = vcovHC, type = "HC1")
 ```
-Accepted at 0.001%.
 
+Accepted at 0.001%.
 And the last model:
 
 ```{r}
@@ -946,15 +896,10 @@ summ.fit3$diagnostics
 
 ```
 
-
 This presentation provides a decent overview with worked examples.
-
-Weak instruments means that the instrument has a low correlation with the endogenous explanatory variable. This could result in a larger variance in the coefficient, and severe finite-sample bias. From the help file for AER, it says it does an F-test on the first stage regression; the null is that the instrument is weak. For the models, the null is rejected, so you can move forward with the assumption that the instrument is sufficiently strong.
-
+Weak instruments means that the instrument has a low correlation with the endogenous explanatory variable. This could result in a larger variance in the coefficient, and severe finite-sample bias. From the help file for AER, it says it does an F-test on the first stage regression; the null is that the instrument is weak. For the models, the null is rejected, so I can move forward with the assumption that the instrument is sufficiently strong.
 Wu-Hausman tests that IV is just as consistent as OLS, and since OLS is more efficient, it would be preferable. The null here is that they are equally consistent; in this output, Wu-Hausman is significant at the p<0.1 level, that would mean IV is consistent and OLS is not.
-
-Sargan tests overidentification restrictions. The idea is that if you have more than one instrument per endogenous variable, the model is overidentified, and you have some excess information. All of the instruments must be valid for the inferences to be correct. So it tests that all exogenous instruments are in fact exogenous, and uncorrelated with the model residuals. If it is significant, it means that you don't have valid instruments (somewhere in there, as this is a global test). In this case, this isn't a concern. 
-
+Sargan tests overidentification restrictions. The idea is that if I have more than one instrument per endogenous variable, the model is overidentified, and I have some excess information. All of the instruments must be valid for the inferences to be correct. So it tests that all exogenous instruments are in fact exogenous, and uncorrelated with the model residuals. If it is significant, it means that I don't have valid instruments (somewhere in there, as this is a global test). In this case, this isn't a concern. 
 Same for direct imputations:
 ```{r}
 gaze.lines.ivreg.diagn <- function(x, col="p-value", row=1:3, digits=2){
@@ -973,13 +918,8 @@ gaze.lines.ivreg.diagn(list(summ.fit1, summ.fit2), row=1:2)
 gaze.lines.ivreg.diagn(list(summ.fit1, summ.fit2), col=4, row=1:2, digits=2)
 ```
 
-
-
-
-
 # 7. Nice plots for the paper.
-
-In this section I`m gpoing to run some codes for graphs :)
+In this section I`m going to run some codes for graphs
 
 ## Regression coefplot coefficients (Used).
 
@@ -1004,12 +944,10 @@ coefplot(ivreg3) #interesting one
 
 ## Correlations plot:
 
-
 ```{r}
 M<-data[,c("act", "video", "age", "gender", "gpa", "religion", "leisure", "race", "income")]
 pairs(M)
 ```
-
 
 ## Marginal effects.
 
@@ -1023,11 +961,3 @@ ggplot(mydf, aes(x, predicted)) +
   geom_line() +
   geom_ribbon(aes(ymin = conf.low, ymax = conf.high), alpha = .1) 
 ```
-
-
-
-
-
-
-
-
