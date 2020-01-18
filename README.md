@@ -1,7 +1,7 @@
                          #EDUCATIONAL ATTAINMENT AND VIDEOGAMES: 
 ARE VIDEOGAMES A DETERMINING FACTOR IN THE ACADEMIC ACHIEVEMENT OF FRESHMAN COLLEGE STUDENTS?#
 
-ANDRADE SILVA, Luis Eduardo 
+ANDRADE SILVA, Luis Eduardo and
 Calvo López, Cristina
 Causal Inference
 Master in Social Sciences, UC3M
