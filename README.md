@@ -2,7 +2,8 @@
 ARE VIDEOGAMES A DETERMINING FACTOR IN THE ACADEMIC ACHIEVEMENT OF FRESHMAN COLLEGE STUDENTS?#
 
 ANDRADE SILVA, Luis Eduardo 
-Social Stratification II
+Calvo López, Cristina
+Causal Inference
 Master in Social Sciences, UC3M
 
 
