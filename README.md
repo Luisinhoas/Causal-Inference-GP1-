@@ -1,13 +1,14 @@
-# EDUCATIONAL ATTAINMENT AND VIDEOGAMES
+                         #EDUCATIONAL ATTAINMENT AND VIDEOGAMES: 
+ARE VIDEOGAMES A DETERMINING FACTOR IN THE ACADEMIC ACHIEVEMENT OF FRESHMAN COLLEGE STUDENTS?#
 
-**Luis Eduardo Andrade Silva & Cristina Calvo López**
+ANDRADE SILVA, Luis Eduardo 
+Social Stratification II
+Master in Social Sciences, UC3M
 
-This document includes the complete rmarkdown (raw code) from the paper «Educational attainment and videogames: are the videogames a determining factor in the academic achievement?» In this same GitHub there is the proper rmarkdown document that can be download in order to run the codes easil and the used dataset.
+
+This document includes the complete rmarkdown (raw code) from the paper «Educational attainment and videogames: are the videogames a determining factor in the academic achievement?» 
 
 
-The pdf where this code is runned togueter with the results, with might be easier to observe the results. can be download here: *https://we.tl/t-9bP2SCfnR5*
-
-The models used in the paper can be found in section 6. 2SLS (FINAL MODELS).
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 setwd("/Users/Luisinho/Desktop/Github.GP1")
@@ -40,7 +41,6 @@ library(mctest)
 library(formattable)
 ```
 
-
 ##. Pre-analysis of the data and OLS.
 
 What is the correlation between IND variables? 
@@ -53,35 +53,26 @@ cor(income,video, use = "complete.obs")
 cor(income,religion, use = "complete.obs")
 cor(income,leisure, use = "complete.obs") 
 
-
 cor(gpa,age, use = "complete.obs") 
 cor(gpa,video, use = "complete.obs")
 cor(gpa,religion, use = "complete.obs") 
 cor(gpa,gender, use = "complete.obs") 
 cor(gpa,leisure, use = "complete.obs") 
-
-
 cor(video,religion, use = "complete.obs") 
 cor(video,leisure, use = "complete.obs") 
-
 cor(religion,leisure, use = "complete.obs") 
 
-
 age2<-sqrt(age)
-
 cor(age,age2, use = "complete.obs") #0.9982253 (obviously)
-
 #Same as the previous exercise, we use complete.obs to aboid the Nas.
 ```
 
- The correlation between every pair of variables doesn't seem very high.  
+The correlation between every pair of variables doesn't seem very high.  
  
 ### Are these variables jointly significant? 
 
 
-We can try to test if the variables we have been stablising in the theoretical part are jointly significant. As we explained, it is expected that the main independent theoretical variable, videogames, is correlated (negatively, at least as is expected) with leisureing.
-
-For that, is better to use f-test. So we start making the hypothesis. An F-test will allow us to test the null that all of the coefficients are equal zero; that is that these variables jointly significance. So:
+I tried to test if the variables I have established in the theoretical part are jointly significant. As I explained, it is expected that the main independent theoretical variable, HPW videogames, is correlated (negatively, at least as is expected) with leisureing. For that, is better to use f-test. So I start designing the hypothesis. An F-test will allow us to test the null that all of the coefficients are equal zero; that is that these variables jointly significance. So:
 
 H0: video-leisure=0.
 H1: video-leisure=/=0.
@@ -96,8 +87,7 @@ OLS<-lm(formula = act ~ age2 + gender + (gpa^2) + religion + video +
 lht(OLS, c("video = 0", "leisure = 0", "income=0"), white.adjust = "hc1")
 ```
 
-Knowing the null hypothesis that is stated for us, and that the F-stat for the test is 31.389, with the p-value of (<2.2e-16). Df = 3 tells you the number of restrictions being tested. Obviously with such a low p-value we can reject the null hypothesis.
-
+Knowing the null hypothesis that is stated, and that the F-stat for the test is 31.389, with the p-value of (<2.2e-16). Df = 3 tells you the number of restrictions being tested. Obviously with such a low p-value I can reject the null hypothesis.
 
 
 ### Variance-covariance matrix.
@@ -110,12 +100,8 @@ var_cov<-vcovHC(OLS, type = "HC4")
 coeftest(OLS, df = Inf, var_cov)
 ```
 
-Now vcovHC() function creates a variance “ covariance matrix for you. The first parameter is the regression model we have made. Keep omega as NULL. The type parameter refers to what measure of heteroskedasticity is being used. There are 5 types from HC0 to HC4. HC4 is the latest and we use that. You can read more about it in the sandwich package.
-
+Now vcovHC() function creates a variance “ covariance matrix. The first parameter is the regression model I have made. Keep omega as NULL. The type parameter refers to what measure of heteroskedasticity is being used. There are 5 types from HC0 to HC4. HC4 is the latest and we use that. You can read more about it in the sandwich package.
 This is our variance- covariance matrix. The independent variables are listed both in column and rows. The diagonal elements show the variance of each variable with itself. The diagonal values should have been constant, but since they vary, we can start to detect the presence of heteroskedasticity.
-
-
-
 
 ### a. Multicolinearity check.
 
@@ -145,8 +131,7 @@ imcdiag(X,act)
 ```
 
 The calculated value of the Chi-square test statistic is found to be  241855.1066  and it is highly significant thereby implying the presence of multicollinearity in the model specification.
-This induces us to go for the next step of Farrar – Glauber test (F – test) for the location of the multicollinearity. Nono of the variables F-statistic is very high, therefore we are not sure which ones are the cause of multicolinearity.
-
+This induces me to go for the next step of Farrar – Glauber test (F – test) for the location of the multicollinearity. Non of the variables F-statistic is very high, therefore I'm not sure which ones are the cause of multicolinearity.
 Therefore, for examining the pattern of multicollinearity, it is required to conduct t-test for correlation coefficient. As there are 15 explanatory variables, there will be several pairs of partial correlation coefficients. In R, there are several packages for getting the partial correlation coefficients along with the t- test for checking their significance level. We’ll the ‘ppcor’ package to compute the partial correlation coefficients along with the t-statistic and corresponding p-values.
 
 ```{r}
@@ -156,13 +141,9 @@ pcor(X, method = "pearson")
 ```
 
 There are sligh correlctions between gpa&act (which makes sense), videogames&gender (-0.4609669112, maybe problematic), slighly high between gpa&leisure(-0.152744844) and videogames&tv(0.270858361), but nothing really worring.
-
 Not only that even some of the low correlation coefficients are also found to be highyl significant. Thus, the Farrar-Glauber test points out that X1 is the root cause of all multicollinearity problem.
-
 There are several remedial measure to deal with the problem of multicollinearity such Prinicipal Component Regression, Ridge Regression, Stepwise Regression etc.
-
-However, in the present case, we can't go for the exclusion of the variables for which the VIF values are above 10 (we dont have any) and as well as the concerned variable logically seems to be redundant. Age and experience will certainly be correlated. So, why to use both of them? If we use ‘age’ or ‘age-squared’, it will reflect the experience of the respondent also. Thus, we try to build a model by excluding ‘experience’, estimate the model and go for further diagnosis for the presence of multicollinearity.
-
+However, in the present case, I can't go for the exclusion of the variables for which the VIF values are above 10 (I dont have any) and as well as the concerned variable logically seems to be redundant. Age and experience will certainly be correlated. So, why to use both of them? If we use ‘age’ or ‘age-squared’, it will reflect the experience of the respondent also. Thus, we try to build a model by excluding ‘experience’, estimate the model and go for further diagnosis for the presence of multicollinearity.
 As the problem seems to be more with tv, we're going to try to exclude it and also try using recode sqrt from the varibales age and gpa.
 
 ```{r}
@@ -180,14 +161,10 @@ We can check now again the multicoliniarity issue.
 
 
 ### b. Homoscedasticity problem.
-
-Now we have to focus in the next problem: it seems that we also have a problem of Heterocedasticity. There are several ways to control this, but lets first focus on measuring if this is right.
-
+Now I focused in the next problem: it seems that I also have a problem of Heterocedasticity. There are several ways to control this, but lets first focus on measuring if this is right.
 
 # 1. Previous. Bivariate OLS:
-
 The most simple OLS we have to run is the effect of the main independent variable (viodegames) on our dependent (average SAT grade).
-
 
 ```{r}
 OLS<-lm(data=data, act~video) 
@@ -209,7 +186,7 @@ The linearity asumptions seems clear here.
 
 ##  Check for multicolinearity.
 
-The second MLR assumption is no Perfect Collinearity (Multicollinearity). We can check this here:
+The second MLR assumption is no Perfect Collinearity (Multicollinearity). I can check this here:
 
 ```{r}
 cor1<-cor(act,video, use="complete.obs") #complete.obs is a method to compute
@@ -235,7 +212,7 @@ With such a correlation, almost no vif and no indicator of multicolinearity, the
 
 ##  Heteroscedasticity.
 
-Now we're going to check for the homoeskedasticity and no autocorrelation assumption.
+Now I'm going to check for the homoeskedasticity and no autocorrelation assumption.
 
 ```{r}
 library(olsrr)
@@ -243,13 +220,12 @@ ols_test_breusch_pagan(OLS, rhs = TRUE)
 ```
 
 Under this simple test, the moodel variance seems not constant, violating one of the main assumption of Gauss- Markov as the variance is expected to be constant.
-
-Nevertheless, as the only purpose of the first model is to be use as a preliminary context of the effects and ideas, this is not consider important. As the rest of the hypotesis are found, we just need to take into account that the efficiency is not very high, as can be expected from a singre explanatory variable model, and more knowing the nature of the variable and topic.
+Nevertheless, as the only purpose of the first model is to be use as a preliminary context of the effects and ideas, this is not consider important. As the rest of the hypotesis are found, I just need to take into account that the efficiency is not very high, as can be expected from a singre explanatory variable model, and more knowing the nature of the variable and topic.
 
 
 # 2. Previous. Trivariate model.
 
-The second model we are goint to run is the effect of videogames and income in the educational attainment. 
+The second model I'm  going to run is the effect of videogames and income in the educational attainment. 
 
 ```{r}
 OLS2<-lm(act~video+income, data=data)
@@ -257,24 +233,19 @@ summary(OLS2)
 ```
 
 The model is act = 21.229784 + 0.263522 (video)+ 0.186210(income).
-
 The videogames seems to be significant.
-
 Even if this results can seem weird, they are in the line of previous researches, where they observed that there is a more direct effect of hobbies on attainment that income or class, as they are use as an indirect path on ineauqlity transmision.
+Precisilly, if I run also this regression, this path seems to be clear.
 
-Precisilly, if we run also this regression, this path seems to be clear.
 ```{r}
 o<-lm(data=data, video~income)
 summary(o)
 ```
 
-
 All variables are significantly statistically different from zero at the 5% level against a two-sided alternative, but prpblck the not significant at 1% level. R-squared is 0.3124 for 348643  degrees of freedom.
-
 The linearity asumptions seems clear here.
 
 ##  Gauss-Markov assumptions:
-
 Multicollinearity check:
 
 ```{r}
@@ -292,7 +263,6 @@ imcdiag(X,act)
 ```
 
 As in the previous case, there is no reason to worry about this. 
-
 Heteroscedasticity and no autocorrelation assumption:
 
 ```{r}
@@ -302,7 +272,6 @@ ols_test_breusch_pagan(OLS2, rhs = TRUE)
 Under this simple test, the moodel variance seems constant. Ever throught, this model is not expected to be efficient.
 
 # 3. Previous. Multivariate OLS.
-
 The basic multiple OLS based on the theory presented is the following:
 
 ```{r}
@@ -311,10 +280,8 @@ summary(OLS)
 #plot(OLS, c(1))
 ```
 
-
 ##. Markov Gauss Assumptions
-
-Seems like could have multicolinearity. Le's check:
+Seems like I could have multicolinearity. Le's check:
 
 ### a. Multicolinearity check.
 
@@ -344,8 +311,7 @@ imcdiag(X,act)
 ```
 
 The calculated value of the Chi-square test statistic is found to be  241855.1066  and it is highly significant thereby implying the presence of multicollinearity in the model specification.
-This induces us to go for the next step of Farrar – Glauber test (F – test) for the location of the multicollinearity. Nono of the variables F-statistic is very high, therefore we are not sure which ones are the cause of multicolinearity.
-
+This induces us to go for the next step of Farrar – Glauber test (F – test) for the location of the multicollinearity. Non of the variables F-statistic is very high, therefore we are not sure which ones are the cause of multicolinearity.
 Therefore, for examining the pattern of multicollinearity, it is required to conduct t-test for correlation coefficient. As there are 15 explanatory variables, there will be several pairs of partial correlation coefficients. In R, there are several packages for getting the partial correlation coefficients along with the t- test for checking their significance level. We’ll the ‘ppcor’ package to compute the partial correlation coefficients along with the t-statistic and corresponding p-values.
 
 ```{r}
@@ -354,14 +320,10 @@ library(ppcor)
 pcor(X, method = "pearson")
 ```
 
-There are sligh correlctions between gpa&act (which makes sense), videogames&gender (-0.4609669112, maybe problematic), slighly high between gpa&leisure(-0.152744844) and videogames&tv(0.270858361), but nothing really worring.
-
+There are sligh correlations between gpa&act (which makes sense), videogames&gender (-0.4609669112, maybe problematic), slighly high between gpa&leisure(-0.152744844) and videogames&tv(0.270858361), but nothing really worring.
 Not only that even some of the low correlation coefficients are also found to be highyl significant. Thus, the Farrar-Glauber test points out that X1 is the root cause of all multicollinearity problem.
-
 There are several remedial measure to deal with the problem of multicollinearity such Prinicipal Component Regression, Ridge Regression, Stepwise Regression etc.
-
-However, in the present case, we can't go for the exclusion of the variables for which the VIF values are above 10 (we dont have any) and as well as the concerned variable logically seems to be redundant. Age and experience will certainly be correlated. So, why to use both of them? If we use ‘age’ or ‘age-squared’, it will reflect the experience of the respondent also. Thus, we try to build a model by excluding ‘experience’, estimate the model and go for further diagnosis for the presence of multicollinearity.
-
+However, in the present case, I can't go for the exclusion of the variables for which the VIF values are above 10 (we dont have any) and as well as the concerned variable logically seems to be redundant. Age and experience will certainly be correlated. So, why to use both of them? If I use ‘age’ or ‘age-squared’, it will reflect the experience of the respondent also. Thus, we try to build a model by excluding ‘experience’, estimate the model and go for further diagnosis for the presence of multicollinearity.
 As the problem seems to be more with tv, we're going to try to exclude it and also try using recode sqrt from the varibales age and gpa.
 
 ```{r}
@@ -374,23 +336,21 @@ OLS4<-lm(data=data, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+inc
 summary(OLS4)
 ```
 
-We also seem to have reduced the vif
+I also seem to have reduced the vif
+
 ```{r}
 vif(OLS4)
 ```
-We can check now again the multicoliniarity issue.
+I can check now again the multicoliniarity issue.
 
 
 ### b. Homoscedasticity problem.
-
-Now we have to focus in the next problem: it seems that we also have a problem of Heterocedasticity. There are several ways to control this, but lets first focus on measuring if this is right.
+Now I have to focus in the next problem: it seems that we also have a problem of Heterocedasticity. There are several ways to control this, but lets first focus on measuring if this is right.
 
 #### Measuring the variance 4 ways:
-
 One of the assumptions made about residuals/errors in OLS regression is that the errors have the same but unknown variance. This is known as constant variance or homoscedasticity. When this assumption is violated, the problem is known as heteroscedasticity.
 
 *Consequences of Heteroscedasticity*
-
 The OLS estimators and regression predictions based on them remains unbiased and consistent.
 The OLS estimators are no longer the BLUE (Best Linear Unbiased Estimators) because they are no longer efficient, so the regression predictions will be inefficient too.
 Because of the inconsistency of the covariance matrix of the estimated regression coefficients, the tests of hypotheses, (t-test, F-test) are no longer valid.
@@ -405,7 +365,6 @@ F Test
 ### Bartlett Test. (Variances not equal)
 
 Bartlett’s test is used to test if variances across samples is equal. It is sensitive to departures from normality. The Levene test is an alternative test that is less sensitive to departures from normality.
-
 You can perform the test using 2 continuous variables, one continuous and one grouping variable, a formula or a linear model.
 
 ```{r}
@@ -430,14 +389,11 @@ myvars<-c("gender", "act", "gpa", "age", "video", "religion", "year", "leisure",
 ols_test_bartlett(data, myvars)
 ```
 
-We are testing the hypothesis that the group variances are equal. With a p-value less than 0.05, we reject the null hypothesis at the 0.05 significance level. We conclude that there is enought evidence to claim that the variances are not equal.
-
+I'm testing the hypothesis that the group variances are equal. With a p-value less than 0.05, we reject the null hypothesis at the 0.05 significance level. We conclude that there is enought evidence to claim that the variances are not equal.
 Equal variances across samples is called homogeneity of variance. The Levene test is less sensitive than the Bartlett test to departures from normality. If you have strong evidence that your data do in fact come from a normal, or nearly normal, distribution, then Bartlett's test has better performance.
 
 ### Breusch Pagan Test (No constant variances)
-
 Breusch Pagan Test was introduced by Trevor Breusch and Adrian Pagan in 1979. It is used to test for heteroskedasticity in a linear regression model and assumes that the error terms are normally distributed. It tests whether the variance of the errors from a regression is dependent on the values of the independent variables. It is a x2 test.
-
 You can perform the test using the fitted values of the model, the predictors in the model and a subset of the independent variables. It includes options to perform multiple tests and p value adjustments. The options for p value adjustments include Bonferroni, Sidak and Holm’s method.
 
 ```{r}
@@ -449,8 +405,7 @@ Here the Null Hypothesis: Equal/constant variances. Is rejected, so seems no con
 
 ### Score Test (variance not homogenous)
 
-Test for heteroskedasticity under the assumption that the errors are independent and identically distributed (i.i.d.). You can perform the test using the fitted values of the model, the predictors in the model and a subset of the independent variables.
-
+Test for heteroskedasticity under the assumption that the errors are independent and identically distributed (i.i.d.). I can perform the test using the fitted values of the model, the predictors in the model and a subset of the independent variables.
 Use fitted values of the model
 
 ```{r}
@@ -461,7 +416,6 @@ Reject the null: variance is heterogeneus.
 ### F Test (Variance is not homogenous)
 
 F Test for heteroskedasticity under the assumption that the errors are independent and identically distributed (i.i.d.). You can perform the test using the fitted values of the model, the predictors in the model and a subset of the independent variables.
-
 Use independent variables of the model
 
 ```{r}
@@ -470,35 +424,13 @@ ols_test_f(model, rhs = TRUE)
 
 Reject null: Variance is not homogenous
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Conclusions for the variance tests:
-
-It seems clear that we do have a problem in the variance, as it is not constant neither homogeneus. The assumption of the homogeneity of the variance is not found, as the level of the variance is not constant accross the sample. When there is not homogeneity that can lead to a problem of efficiency.
-
-
+It seems clear that I do have a problem in the variance, as it is not constant neither homogeneus. The assumption of the homogeneity of the variance is not found, as the level of the variance is not constant accross the sample. When there is not homogeneity that can lead to a problem of efficiency.
 While heteroskedasticity does not cause bias in the coefficient estimates, it does make them less precise; lower precision increases the likelihood that the coefficient estimates are further from the correct population value.
 
-
-
-
 # 4.  Fix the heteroskedasticty problem.
-
-As is clear we have this problem, we have to chances. The first one in to fix this, and the second is to use a more appropiate method to deal with it.
-
-We have 5 possibilities:
+As is clear I have this problem. The first one in to fix this, and the second is to use a more appropiate method to deal with it.
+I have 5 possibilities:
 
 ### 1. Box-Cox transformation. (FAIL, variance of residuals is constant)
 
@@ -521,7 +453,7 @@ df <- cbind(df, act_new=predict(distBCMod, df$act)) # append the transformed var
 head(df, 6)
 ```
 
-The transformed data for our new regression model is ready. Lets build the model and check for heteroscedasticity.
+The transformed data for the new regression model is ready. Lets build the model and check for heteroscedasticity.
 
 ```{r}
 lmMod_bc <- lm(data=df, act~age2+gender+(gpa^2)+religion+video+year+leisure+race+income)
@@ -588,12 +520,12 @@ I have added a new column called regressions which contains the linear regressio
 #)
 ``` 
 
-We stoped the code as it takes a long time to run (not fixing it properly).
+I stoped the code as it takes a long time to run (not fixing it properly).
 
 
 ### 3. Coeftest. (Seems to help) 
 
-Now to check whether our data has heteroskedasticity or not, we will construct a variance-covariance matrix.
+Now to check whether the data has heteroskedasticity or not, we will construct a variance-covariance matrix.
 
 ```{r}
 library(sandwich)
@@ -611,10 +543,7 @@ coeftest(OLS, df = Inf, vcovHC(OLS, omega = NULL, type = "HC4"))
 
 This seem to have fixed the standard errors in my regression.
 
-
-
 ### 4. Weighted Least Squares estimates (WLS) (same, slightly better) 
-
 We need our model:
 
 ```{r}
